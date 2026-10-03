@@ -3,20 +3,28 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, Send, Loader2, AlertCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Send,
+  Loader2,
+  AlertCircle
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProgressBar } from "@/components/apply/progress-bar";
 import { StepWrapper } from "@/components/apply/step-wrapper";
 import { Step1Personal } from "@/components/apply/steps/step-1-personal";
 import { Step2Location } from "@/components/apply/steps/step-2-location";
 import { Step3Assistance } from "@/components/apply/steps/step-3-assistance";
-import { Step4Documents } from "@/components/apply/steps/step-4-documents";
+import {
+  Step4Documents,
+  type UploadedPaths
+} from "@/components/apply/steps/step-4-documents";
 import { Step5Consent } from "@/components/apply/steps/step-5-consent";
 import {
   step1Schema,
   step2Schema,
   step3Schema,
-  step4Schema,
   step5Schema,
   type Step1Data,
   type Step2Data,
@@ -36,10 +44,15 @@ interface FormState {
   step1: Partial<Step1Data>;
   step2: Partial<Step2Data>;
   step3: Partial<Step3Data>;
-  applicantPhoto: File | null;
-  supportingDocs: File[];
+  uploads: UploadedPaths;
   step5: Partial<Step5Data>;
 }
+
+const EMPTY_UPLOADS: UploadedPaths = {
+  photoPath: null,
+  photoMeta: null,
+  docs: []
+};
 
 export function ApplicationForm() {
   const router = useRouter();
@@ -49,21 +62,18 @@ export function ApplicationForm() {
   const [errors, setErrors] = React.useState<Record<string, string>>({});
 
   const [form, setForm] = React.useState<FormState>({
-    step1: { receivedBefore: false } as Partial<Step1Data>,
+    step1: {} as Partial<Step1Data>,
     step2: {},
     step3: {
       receivedBefore: false,
       receivedBeforeNote: ""
     } as Partial<Step3Data>,
-    applicantPhoto: null,
-    supportingDocs: [],
+    uploads: EMPTY_UPLOADS,
     step5: {
       agreeTruth: false,
       agreePrivacy: false
     } as Partial<Step5Data>
   });
-
-  /* ── Update helpers ─────────────────────────────────── */
 
   const update1 = <K extends keyof Step1Data>(key: K, value: Step1Data[K]) =>
     setForm((f) => ({ ...f, step1: { ...f.step1, [key]: value } }));
@@ -77,8 +87,6 @@ export function ApplicationForm() {
   const update5 = <K extends keyof Step5Data>(key: K, value: Step5Data[K]) =>
     setForm((f) => ({ ...f, step5: { ...f.step5, [key]: value } }));
 
-  /* ── Step validation ────────────────────────────────── */
-
   function validateStep(step: number): boolean {
     setErrors({});
     let result;
@@ -90,10 +98,21 @@ export function ApplicationForm() {
     } else if (step === 3) {
       result = step3Schema.safeParse(form.step3);
     } else if (step === 4) {
-      result = step4Schema.safeParse({
-        applicantPhoto: form.applicantPhoto,
-        supportingDocs: form.supportingDocs
-      });
+      // Custom validation for step 4
+      const newErrors: Record<string, string> = {};
+      if (!form.uploads.photoPath) {
+        newErrors.applicantPhoto =
+          "Please upload a photo of yourself.";
+      }
+      if (form.uploads.docs.length === 0) {
+        newErrors.supportingDocs =
+          "Please upload at least one supporting document.";
+      }
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors);
+        return false;
+      }
+      return true;
     } else if (step === 5) {
       result = step5Schema.safeParse(form.step5);
     } else {
@@ -112,8 +131,6 @@ export function ApplicationForm() {
     return true;
   }
 
-  /* ── Navigation ─────────────────────────────────────── */
-
   const next = () => {
     if (!validateStep(current)) return;
     setCurrent((c) => Math.min(c + 1, STEPS.length));
@@ -126,10 +143,7 @@ export function ApplicationForm() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  /* ── Submit ─────────────────────────────────────────── */
-
   async function submit() {
-    // Validate all steps
     if (!validateStep(1)) {
       setCurrent(1);
       return;
@@ -155,37 +169,20 @@ export function ApplicationForm() {
     setSubmitError("");
 
     try {
-      const fd = new FormData();
-      // Step 1
-      fd.append("fullName", form.step1.fullName ?? "");
-      fd.append("dateOfBirth", form.step1.dateOfBirth ?? "");
-      fd.append("gender", form.step1.gender ?? "");
-      fd.append("email", form.step1.email ?? "");
-      fd.append("phone", form.step1.phone ?? "");
-      // Step 2
-      fd.append("country", form.step2.country ?? "");
-      fd.append("state", form.step2.state ?? "");
-      fd.append("city", form.step2.city ?? "");
-      fd.append("homeAddress", form.step2.homeAddress ?? "");
-      fd.append("maritalStatus", form.step2.maritalStatus ?? "");
-      fd.append("employmentStatus", form.step2.employmentStatus ?? "");
-      // Step 3
-      fd.append("assistanceType", form.step3.assistanceType ?? "");
-      fd.append("amountRequested", form.step3.amountRequested ?? "");
-      fd.append("needExplanation", form.step3.needExplanation ?? "");
-      fd.append("howItWillHelp", form.step3.howItWillHelp ?? "");
-      fd.append("receivedBefore", String(form.step3.receivedBefore ?? false));
-      fd.append("receivedBeforeNote", form.step3.receivedBeforeNote ?? "");
-      // Files
-      if (form.applicantPhoto) fd.append("applicantPhoto", form.applicantPhoto);
-      form.supportingDocs.forEach((doc) => fd.append("supportingDocs", doc));
-      // Consent
-      fd.append("agreeTruth", String(form.step5.agreeTruth ?? false));
-      fd.append("agreePrivacy", String(form.step5.agreePrivacy ?? false));
+      const payload = {
+        ...form.step1,
+        ...form.step2,
+        ...form.step3,
+        ...form.step5,
+        photoPath: form.uploads.photoPath,
+        photoMeta: form.uploads.photoMeta,
+        docs: form.uploads.docs
+      };
 
       const res = await fetch("/api/apply", {
         method: "POST",
-        body: fd
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
       });
 
       const data = await res.json().catch(() => ({}));
@@ -194,8 +191,9 @@ export function ApplicationForm() {
         throw new Error(data?.error ?? "Submission failed. Please try again.");
       }
 
-      // Redirect to success page
-      router.push(`/apply/success?ref=${encodeURIComponent(data.referenceNumber)}`);
+      router.push(
+        `/apply/success?ref=${encodeURIComponent(data.referenceNumber)}`
+      );
     } catch (err) {
       setSubmitError(
         err instanceof Error ? err.message : "Something went wrong."
@@ -204,16 +202,12 @@ export function ApplicationForm() {
     }
   }
 
-  /* ── Render ─────────────────────────────────────────── */
-
   return (
     <div className="mx-auto max-w-3xl">
-      {/* Progress */}
       <div className="mb-10">
         <ProgressBar steps={[...STEPS]} currentStep={current} />
       </div>
 
-      {/* Step content */}
       <div className="rounded-3xl border border-surface-border bg-white p-6 shadow-card sm:p-8 lg:p-10">
         <AnimatePresence mode="wait">
           <StepWrapper stepKey={`step-${current}`}>
@@ -266,17 +260,13 @@ export function ApplicationForm() {
                   description="These help us verify your situation and process your application faster."
                 />
                 <Step4Documents
-                  applicantPhoto={form.applicantPhoto}
-                  supportingDocs={form.supportingDocs}
+                  uploads={form.uploads}
                   errors={{
                     applicantPhoto: errors.applicantPhoto,
                     supportingDocs: errors.supportingDocs
                   }}
-                  onPhotoChange={(files) =>
-                    setForm((f) => ({ ...f, applicantPhoto: files[0] ?? null }))
-                  }
-                  onDocsChange={(files) =>
-                    setForm((f) => ({ ...f, supportingDocs: files }))
+                  onUploadsChange={(uploads) =>
+                    setForm((f) => ({ ...f, uploads }))
                   }
                 />
               </>
@@ -302,7 +292,6 @@ export function ApplicationForm() {
           </StepWrapper>
         </AnimatePresence>
 
-        {/* Error banner */}
         {submitError && (
           <div className="mt-6 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
             <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
@@ -310,7 +299,6 @@ export function ApplicationForm() {
           </div>
         )}
 
-        {/* Navigation */}
         <div className="mt-10 flex flex-col-reverse gap-3 border-t border-surface-border pt-8 sm:flex-row sm:items-center sm:justify-between">
           <Button
             type="button"
@@ -360,7 +348,6 @@ export function ApplicationForm() {
         </div>
       </div>
 
-      {/* Privacy note */}
       <p className="mt-6 text-center text-xs text-ink-muted">
         Your information is encrypted and confidential. We never share your
         details with third parties.
