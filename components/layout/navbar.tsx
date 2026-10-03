@@ -8,11 +8,8 @@ import {
   X,
   Heart,
   ArrowRight,
-  User,
-  LogIn,
-  UserPlus,
-  Shield,
-  LayoutDashboard
+  Search,
+  Mail
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
@@ -23,7 +20,7 @@ import { cn } from "@/lib/utils";
 export function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = React.useState(false);
-  const [accountOpen, setAccountOpen] = React.useState(false);
+  const [helperOpen, setHelperOpen] = React.useState(false);
   const [scrolled, setScrolled] = React.useState(false);
 
   React.useEffect(() => {
@@ -45,19 +42,18 @@ export function Navbar() {
 
   React.useEffect(() => {
     setOpen(false);
-    setAccountOpen(false);
+    setHelperOpen(false);
   }, [pathname]);
 
-  // Close account dropdown when clicking outside
   React.useEffect(() => {
-    if (!accountOpen) return;
+    if (!helperOpen) return;
     const onClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      if (!target.closest("[data-account-menu]")) setAccountOpen(false);
+      if (!target.closest("[data-helper-menu]")) setHelperOpen(false);
     };
     document.addEventListener("click", onClick);
     return () => document.removeEventListener("click", onClick);
-  }, [accountOpen]);
+  }, [helperOpen]);
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -95,9 +91,45 @@ export function Navbar() {
               )}
             </Link>
           ))}
+
+          {/* Helper dropdown trigger */}
+          <div className="relative" data-helper-menu>
+            <button
+              type="button"
+              onClick={() => setHelperOpen((v) => !v)}
+              aria-expanded={helperOpen}
+              className={cn(
+                "rounded-full px-4 py-2 text-sm font-medium transition-colors",
+                helperOpen || isActive("/track")
+                  ? "text-brand-600"
+                  : "text-ink-muted hover:text-ink"
+              )}
+            >
+              Help
+            </button>
+
+            {helperOpen && (
+              <div className="absolute left-0 top-full z-50 mt-2 w-72 overflow-hidden rounded-2xl border border-surface-border bg-white shadow-lift">
+                <div className="p-2">
+                  <HelperLink
+                    href="/track"
+                    icon={<Search className="h-4 w-4" />}
+                    label="Track Application"
+                    description="Check your application status"
+                  />
+                  <HelperLink
+                    href="/contact?subject=Message%20for%20Administrator"
+                    icon={<Mail className="h-4 w-4" />}
+                    label="Contact Administrator"
+                    description="Send a message to our team"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
         </nav>
 
-        <div className="hidden items-center gap-2 lg:flex">
+        <div className="hidden items-center gap-3 lg:flex">
           <Button asChild variant="outline" size="md">
             <Link href={siteConfig.navCta.apply.href}>
               {siteConfig.navCta.apply.label}
@@ -109,62 +141,6 @@ export function Navbar() {
               {siteConfig.navCta.donate.label}
             </Link>
           </Button>
-
-          {/* Account dropdown */}
-          <div className="relative" data-account-menu>
-            <button
-              type="button"
-              onClick={() => setAccountOpen((v) => !v)}
-              aria-label="Account menu"
-              aria-expanded={accountOpen}
-              className={cn(
-                "inline-flex h-11 w-11 items-center justify-center rounded-full border border-surface-border bg-white text-ink-muted transition-all hover:border-brand-200 hover:text-brand-600",
-                accountOpen && "border-brand-300 text-brand-600"
-              )}
-            >
-              <User className="h-4 w-4" />
-            </button>
-
-            {accountOpen && (
-              <div className="absolute right-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-2xl border border-surface-border bg-white shadow-lift">
-                <div className="p-2">
-                  <p className="px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
-                    Applicant
-                  </p>
-                  <AccountLink
-                    href="/portal/login"
-                    icon={<LogIn className="h-4 w-4" />}
-                    label="Sign In"
-                    description="Access your account"
-                  />
-                  <AccountLink
-                    href="/portal/signup"
-                    icon={<UserPlus className="h-4 w-4" />}
-                    label="Create Account"
-                    description="New applicant signup"
-                  />
-                  <AccountLink
-                    href="/portal"
-                    icon={<LayoutDashboard className="h-4 w-4" />}
-                    label="My Portal"
-                    description="Track your application"
-                  />
-
-                  <div className="my-2 h-px bg-surface-border" />
-
-                  <p className="px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
-                    Team
-                  </p>
-                  <AccountLink
-                    href="/admin"
-                    icon={<Shield className="h-4 w-4" />}
-                    label="Admin Dashboard"
-                    description="Applications & donations"
-                  />
-                </div>
-              </div>
-            )}
-          </div>
         </div>
 
         <button
@@ -206,6 +182,32 @@ export function Navbar() {
             ))}
           </nav>
 
+          <div className="mt-3 rounded-2xl border border-surface-border bg-surface-soft p-3">
+            <p className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
+              Help
+            </p>
+            <Link
+              href="/track"
+              className="flex items-center justify-between rounded-lg px-3 py-3 text-sm font-medium text-ink hover:bg-white"
+            >
+              <span className="inline-flex items-center gap-2">
+                <Search className="h-4 w-4 text-brand-500" />
+                Track Application
+              </span>
+              <ArrowRight className="h-3.5 w-3.5 opacity-40" />
+            </Link>
+            <Link
+              href="/contact?subject=Message%20for%20Administrator"
+              className="flex items-center justify-between rounded-lg px-3 py-3 text-sm font-medium text-ink hover:bg-white"
+            >
+              <span className="inline-flex items-center gap-2">
+                <Mail className="h-4 w-4 text-brand-500" />
+                Contact Administrator
+              </span>
+              <ArrowRight className="h-3.5 w-3.5 opacity-40" />
+            </Link>
+          </div>
+
           <div className="mt-4 flex flex-col gap-3 border-t border-surface-border pt-5">
             <Button asChild variant="outline" size="lg" className="w-full">
               <Link href={siteConfig.navCta.apply.href}>
@@ -220,23 +222,6 @@ export function Navbar() {
             </Button>
           </div>
 
-          {/* Mobile: portal/admin links */}
-          <div className="mt-5 rounded-2xl border border-surface-border bg-surface-soft p-3">
-            <p className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
-              Applicant
-            </p>
-            <MobileLink href="/portal/login" label="Sign In" />
-            <MobileLink href="/portal/signup" label="Create Account" />
-            <MobileLink href="/portal" label="My Portal" />
-
-            <div className="my-2 h-px bg-surface-border" />
-
-            <p className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
-              Team
-            </p>
-            <MobileLink href="/admin" label="Admin Dashboard" />
-          </div>
-
           <p className="mt-4 text-center text-xs text-ink-subtle">
             EIN: {siteConfig.taxId}
           </p>
@@ -246,7 +231,7 @@ export function Navbar() {
   );
 }
 
-function AccountLink({
+function HelperLink({
   href,
   icon,
   label,
@@ -269,18 +254,6 @@ function AccountLink({
         <p className="text-sm font-semibold text-ink">{label}</p>
         <p className="text-xs text-ink-muted">{description}</p>
       </div>
-    </Link>
-  );
-}
-
-function MobileLink({ href, label }: { href: string; label: string }) {
-  return (
-    <Link
-      href={href}
-      className="flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-ink transition-colors hover:bg-white"
-    >
-      {label}
-      <ArrowRight className="h-3.5 w-3.5 opacity-40" />
     </Link>
   );
 }
