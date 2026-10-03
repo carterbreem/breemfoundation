@@ -7,10 +7,8 @@ import {
   AlertCircle,
   CheckCircle2,
   Clock,
-  FileText,
   MessageSquare,
-  MapPin,
-  Sparkles
+  ShieldCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -176,10 +174,8 @@ export function TrackForm() {
         </form>
       </div>
 
-      {/* Result */}
       {app && (
         <div className="mt-8 space-y-6">
-          {/* Status card */}
           <div className="rounded-3xl border border-surface-border bg-white p-6 shadow-card sm:p-8">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div>
@@ -219,7 +215,9 @@ export function TrackForm() {
               <InfoRow label="Assistance Type" value={app.assistanceType} />
               <InfoRow
                 label="Amount Requested"
-                value={app.amountRequested ? `$${app.amountRequested}` : "Not specified"}
+                value={
+                  app.amountRequested ? `$${app.amountRequested}` : "Not specified"
+                }
               />
               <InfoRow
                 label="Location"
@@ -231,7 +229,6 @@ export function TrackForm() {
               />
             </div>
 
-            {/* Status-specific message */}
             {STATUS_MESSAGES[app.status] && (
               <div className="mt-6 flex items-start gap-4 rounded-2xl border border-brand-100 bg-brand-50/60 p-5">
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-500 text-white">
@@ -249,7 +246,6 @@ export function TrackForm() {
             )}
           </div>
 
-          {/* Messages */}
           {app.messages.length > 0 && (
             <div className="rounded-3xl border border-surface-border bg-white p-6 shadow-card sm:p-8">
               <div className="flex items-center gap-3">
@@ -273,7 +269,9 @@ export function TrackForm() {
                     key={msg.id}
                     className="rounded-xl border border-surface-border bg-surface-soft p-4"
                   >
-                    <p className="text-sm leading-relaxed text-ink">{msg.body}</p>
+                    <p className="text-sm leading-relaxed text-ink">
+                      {msg.body}
+                    </p>
                     <p className="mt-2 text-xs text-ink-muted">
                       {formatDate(msg.createdAt, {
                         month: "long",
