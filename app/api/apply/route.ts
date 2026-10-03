@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateReferenceNumber } from "@/lib/reference-number";
 import { sendTelegramMessage, escapeTelegramHtml } from "@/lib/telegram";
-import { createApplication } from "@/lib/applications/create";
+import {
+  createApplication,
+  type StoredDocument
+} from "@/lib/applications/create";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -21,28 +24,6 @@ function isRateLimited(key: string): boolean {
   return entry.count > MAX_PER_WINDOW;
 }
 
-const ALLOWED_DOC_MIME = [
-  "application/pdf",
-  "image/jpeg",
-  "image/png",
-  "image/webp"
-];
-const ALLOWED_PHOTO_MIME = ["image/jpeg", "image/png", "image/webp"];
-const MAX_FILE_SIZE = 10 * 1024 * 1024;
-
-function validateFile(file: File, kind: "photo" | "doc"): string | null {
-  const allowed = kind === "photo" ? ALLOWED_PHOTO_MIME : ALLOWED_DOC_MIME;
-  if (!allowed.includes(file.type)) {
-    return kind === "photo"
-      ? "Photo must be JPG, PNG, or WebP."
-      : "Documents must be PDF, JPG, PNG, or WebP.";
-  }
-  if (file.size > MAX_FILE_SIZE) {
-    return `${file.name} exceeds the 10MB limit.`;
-  }
-  return null;
-}
-
 export async function POST(req: NextRequest) {
   try {
     const ip =
@@ -57,44 +38,57 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // ── Check env vars up-front ───────────────────────
     const missingEnv: string[] = [];
     if (!process.env.DATABASE_URL) missingEnv.push("DATABASE_URL");
     if (!process.env.DIRECT_URL) missingEnv.push("DIRECT_URL");
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL)
-      missingEnv.push("NEXT_PUBLIC_SUPABASE_URL");
-    if (!process.env.SUPABASE_SERVICE_ROLE_KEY)
-      missingEnv.push("SUPABASE_SERVICE_ROLE_KEY");
-
     if (missingEnv.length > 0) {
       const msg = `Server is missing environment variables: ${missingEnv.join(", ")}`;
       console.error("[apply]", msg);
       return NextResponse.json({ error: msg }, { status: 500 });
     }
 
-    const formData = await req.formData();
-    const get = (k: string) =>
-      (formData.get(k) as string | null)?.trim() ?? "";
+    const body = (await req.json().catch(() => ({}))) as Record<
+      string,
+      unknown
+    >;
 
-    const fullName = get("fullName");
-    const dateOfBirth = get("dateOfBirth");
-    const gender = get("gender");
-    const email = get("email");
-    const phone = get("phone");
-    const country = get("country");
-    const state = get("state");
-    const city = get("city");
-    const homeAddress = get("homeAddress");
-    const maritalStatus = get("maritalStatus");
-    const employmentStatus = get("employmentStatus");
-    const assistanceType = get("assistanceType");
-    const amountRequested = get("amountRequested");
-    const needExplanation = get("needExplanation");
-    const howItWillHelp = get("howItWillHelp");
-    const receivedBefore = get("receivedBefore") === "true";
-    const receivedBeforeNote = get("receivedBeforeNote");
-    const agreeTruth = get("agreeTruth") === "true";
-    const agreePrivacy = get("agreePrivacy") === "true";
+    const str = (k: string) =>
+      typeof body[k] === "string" ? (body[k] as string).trim() : "";
+
+    const fullName = str("fullName");
+    const dateOfBirth = str("dateOfBirth");
+    const gender = str("gender");
+    const email = str("email");
+    const phone = str("phone");
+    const country = str("country");
+    const state = str("state");
+    const city = str("city");
+    const homeAddress = str("homeAddress");
+    const maritalStatus = str("maritalStatus");
+    const employmentStatus = str("employmentStatus");
+    const assistanceType = str("assistanceType");
+    const amountRequested = str("amountRequested");
+    const needExplanation = str("needExplanation");
+    const howItWillHelp = str("howItWillHelp");
+    const receivedBefore = body.receivedBefore === true;
+    const receivedBeforeNote = str("receivedBeforeNote");
+    const agreeTruth = body.agreeTruth === true;
+    const agreePrivacy = body.agreePrivacy === true;
+
+    const photoPath = str("photoPath");
+    const photoMeta = body.photoMeta as
+      | { fileName: string; mimeType: string; sizeBytes: number }
+      | undefined;
+    const docsRaw = Array.isArray(body.docs) ? body.docs : [];
+    const docs: StoredDocument[] = docsRaw.map((d) => {
+      const obj = d as Record<string, unknown>;
+      return {
+        path: String(obj.path ?? ""),
+        fileName: String(obj.fileName ?? "document"),
+        mimeType: String(obj.mimeType ?? "application/octet-stream"),
+        sizeBytes: Number(obj.sizeBytes ?? 0)
+      };
+    });
 
     if (!fullName || !dateOfBirth || !gender || !email || !phone) {
       return NextResponse.json(
@@ -126,37 +120,23 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-
-    const applicantPhoto = formData.get("applicantPhoto") as File | null;
-    const supportingDocs = formData.getAll("supportingDocs") as File[];
-
-    if (!applicantPhoto || applicantPhoto.size === 0) {
+    if (!photoPath || !photoMeta) {
       return NextResponse.json(
-        { error: "Applicant photo is required." },
+        { error: "Applicant photo must be uploaded first." },
         { status: 400 }
       );
     }
-    const photoError = validateFile(applicantPhoto, "photo");
-    if (photoError) {
-      return NextResponse.json({ error: photoError }, { status: 400 });
-    }
-    if (supportingDocs.length === 0) {
+    if (docs.length < 1) {
       return NextResponse.json(
         { error: "At least one supporting document is required." },
         { status: 400 }
       );
     }
-    if (supportingDocs.length > 5) {
+    if (docs.length > 3) {
       return NextResponse.json(
-        { error: "Maximum 5 supporting documents allowed." },
+        { error: "Maximum 3 supporting documents allowed." },
         { status: 400 }
       );
-    }
-    for (const doc of supportingDocs) {
-      const err = validateFile(doc, "doc");
-      if (err) {
-        return NextResponse.json({ error: err }, { status: 400 });
-      }
     }
 
     const referenceNumber = generateReferenceNumber("BF");
@@ -181,8 +161,9 @@ export async function POST(req: NextRequest) {
         howItWillHelp,
         receivedBefore,
         receivedBeforeNote: receivedBeforeNote || undefined,
-        applicantPhoto,
-        supportingDocs,
+        photoPath,
+        photoMeta,
+        docs,
         ip,
         userAgent
       },
@@ -190,7 +171,6 @@ export async function POST(req: NextRequest) {
     );
 
     if (!result.ok) {
-      // ── Show the REAL error to help debug ──────────
       const detail = result.error ?? "Unknown error";
       console.error("[apply] Persist error:", detail);
 
@@ -206,9 +186,7 @@ export async function POST(req: NextRequest) {
 
       return NextResponse.json(
         {
-          error:
-            `We couldn't save your application. Details: ${detail}. ` +
-            `Please try again or email breemsfoundation.org@proton.me.`
+          error: `We couldn't save your application. Details: ${detail}. Please try again or email breemsfoundation.org@proton.me.`
         },
         { status: 500 }
       );
@@ -222,7 +200,7 @@ export async function POST(req: NextRequest) {
         `Email: ${escapeTelegramHtml(email)}\n` +
         `Country: ${escapeTelegramHtml(country)}\n` +
         `Type: ${escapeTelegramHtml(assistanceType)}\n` +
-        `Documents: ${supportingDocs.length}`,
+        `Documents: ${docs.length}`,
       parse_mode: "HTML"
     });
 
