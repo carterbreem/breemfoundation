@@ -6,7 +6,6 @@ import { createApplication } from "@/lib/applications/create";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-/* ── In-memory rate limit (per instance) ───────────────── */
 const WINDOW_MS = 5 * 60_000;
 const MAX_PER_WINDOW = 3;
 const hits = new Map<string, { count: number; resetAt: number }>();
@@ -22,8 +21,6 @@ function isRateLimited(key: string): boolean {
   return entry.count > MAX_PER_WINDOW;
 }
 
-/* ── File validation ───────────────────────────────────── */
-
 const ALLOWED_DOC_MIME = [
   "application/pdf",
   "image/jpeg",
@@ -31,7 +28,7 @@ const ALLOWED_DOC_MIME = [
   "image/webp"
 ];
 const ALLOWED_PHOTO_MIME = ["image/jpeg", "image/png", "image/webp"];
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 function validateFile(file: File, kind: "photo" | "doc"): string | null {
   const allowed = kind === "photo" ? ALLOWED_PHOTO_MIME : ALLOWED_DOC_MIME;
@@ -46,8 +43,6 @@ function validateFile(file: File, kind: "photo" | "doc"): string | null {
   return null;
 }
 
-/* ── POST /api/apply ──────────────────────────────────── */
-
 export async function POST(req: NextRequest) {
   try {
     const ip =
@@ -57,12 +52,24 @@ export async function POST(req: NextRequest) {
 
     if (isRateLimited(ip)) {
       return NextResponse.json(
-        {
-          error:
-            "Too many submissions from this connection. Please try again in a few minutes."
-        },
+        { error: "Too many submissions. Please try again in a few minutes." },
         { status: 429 }
       );
+    }
+
+    // ── Check env vars up-front ───────────────────────
+    const missingEnv: string[] = [];
+    if (!process.env.DATABASE_URL) missingEnv.push("DATABASE_URL");
+    if (!process.env.DIRECT_URL) missingEnv.push("DIRECT_URL");
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL)
+      missingEnv.push("NEXT_PUBLIC_SUPABASE_URL");
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY)
+      missingEnv.push("SUPABASE_SERVICE_ROLE_KEY");
+
+    if (missingEnv.length > 0) {
+      const msg = `Server is missing environment variables: ${missingEnv.join(", ")}`;
+      console.error("[apply]", msg);
+      return NextResponse.json({ error: msg }, { status: 500 });
     }
 
     const formData = await req.formData();
@@ -89,7 +96,6 @@ export async function POST(req: NextRequest) {
     const agreeTruth = get("agreeTruth") === "true";
     const agreePrivacy = get("agreePrivacy") === "true";
 
-    /* ── Server-side validation ─────────────────────── */
     if (!fullName || !dateOfBirth || !gender || !email || !phone) {
       return NextResponse.json(
         { error: "Missing required personal information." },
@@ -121,7 +127,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    /* ── Files ──────────────────────────────────────── */
     const applicantPhoto = formData.get("applicantPhoto") as File | null;
     const supportingDocs = formData.getAll("supportingDocs") as File[];
 
@@ -154,11 +159,9 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    /* ── Generate reference number ──────────────────── */
     const referenceNumber = generateReferenceNumber("BF");
-
-    /* ── Persist to DB + Storage ───────────────────── */
     const userAgent = req.headers.get("user-agent") ?? undefined;
+
     const result = await createApplication(
       {
         fullName,
@@ -187,60 +190,52 @@ export async function POST(req: NextRequest) {
     );
 
     if (!result.ok) {
-      // DB or storage failed
-      console.error("[apply] Persist error:", result.error);
-      // Still log to console as a fallback so nothing is lost
-      console.log("[apply] Fallback log:", {
-        referenceNumber,
-        fullName,
-        email,
-        country,
-        assistanceType,
-        photoName: applicantPhoto.name,
-        docCount: supportingDocs.length
-      });
-      // Notify admin via Telegram so they can manually follow up
+      // ── Show the REAL error to help debug ──────────
+      const detail = result.error ?? "Unknown error";
+      console.error("[apply] Persist error:", detail);
+
       void sendTelegramMessage({
         text:
           `⚠️ <b>Application Persist Failed</b>\n` +
           `Reference: <code>${escapeTelegramHtml(referenceNumber)}</code>\n` +
           `Name: ${escapeTelegramHtml(fullName)}\n` +
           `Email: ${escapeTelegramHtml(email)}\n` +
-          `Error: ${escapeTelegramHtml(result.error ?? "unknown")}`,
+          `Error: ${escapeTelegramHtml(detail)}`,
         parse_mode: "HTML"
       });
+
       return NextResponse.json(
         {
           error:
-            "We couldn't save your application right now. Please try again in a moment, or email us at breemsfoundation.org@proton.me."
+            `We couldn't save your application. Details: ${detail}. ` +
+            `Please try again or email breemsfoundation.org@proton.me.`
         },
         { status: 500 }
       );
     }
 
-    /* ── Telegram notification (success) ────────────── */
-    const telegramText =
-      `📝 <b>New Application</b>\n` +
-      `Reference: <code>${escapeTelegramHtml(referenceNumber)}</code>\n` +
-      `Name: ${escapeTelegramHtml(fullName)}\n` +
-      `Email: ${escapeTelegramHtml(email)}\n` +
-      `Country: ${escapeTelegramHtml(country)}\n` +
-      `Type: ${escapeTelegramHtml(assistanceType)}\n` +
-      `Documents: ${supportingDocs.length}`;
+    void sendTelegramMessage({
+      text:
+        `📝 <b>New Application</b>\n` +
+        `Reference: <code>${escapeTelegramHtml(referenceNumber)}</code>\n` +
+        `Name: ${escapeTelegramHtml(fullName)}\n` +
+        `Email: ${escapeTelegramHtml(email)}\n` +
+        `Country: ${escapeTelegramHtml(country)}\n` +
+        `Type: ${escapeTelegramHtml(assistanceType)}\n` +
+        `Documents: ${supportingDocs.length}`,
+      parse_mode: "HTML"
+    });
 
-    void sendTelegramMessage({ text: telegramText, parse_mode: "HTML" });
-
-    /* ── Return success ─────────────────────────────── */
     return NextResponse.json({
       ok: true,
       referenceNumber: result.referenceNumber ?? referenceNumber,
-      message:
-        "Application received. A confirmation email will be sent shortly."
+      message: "Application received."
     });
   } catch (err) {
-    console.error("[apply] Error:", err);
+    const detail = err instanceof Error ? err.message : "Unknown error";
+    console.error("[apply] Error:", detail, err);
     return NextResponse.json(
-      { error: "Something went wrong. Please try again." },
+      { error: `Something went wrong. Details: ${detail}` },
       { status: 500 }
     );
   }
