@@ -194,9 +194,13 @@ export function ApplicationForm() {
         throw new Error(data?.error ?? "Submission failed. Please try again.");
       }
 
-      router.push(
-        `/apply/success?ref=${encodeURIComponent(data.referenceNumber)}`
-      );
+      if (data.referenceNumber) {
+        router.push(
+          `/apply/success?ref=${encodeURIComponent(data.referenceNumber)}`
+        );
+      } else {
+        throw new Error("Server did not return a reference number.");
+      }
     } catch (err) {
       setSubmitError(
         err instanceof Error ? err.message : "Something went wrong."
@@ -207,7 +211,6 @@ export function ApplicationForm() {
 
   return (
     <>
-      {/* Hero — only on step 1 */}
       {current === 1 && (
         <section className="relative overflow-hidden bg-gradient-to-b from-white via-brand-50/30 to-white">
           <div className="absolute inset-0 bg-grid opacity-30" aria-hidden />
@@ -253,7 +256,6 @@ export function ApplicationForm() {
         </section>
       )}
 
-      {/* Form body */}
       <section
         className={current === 1 ? "pt-6 pb-20 lg:pb-28" : "py-12 lg:py-16"}
       >
