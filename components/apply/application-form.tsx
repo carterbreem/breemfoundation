@@ -8,11 +8,16 @@ import {
   ArrowRight,
   Send,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  ShieldCheck,
+  Clock,
+  Lock
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Container } from "@/components/ui/container";
 import { ProgressBar } from "@/components/apply/progress-bar";
 import { StepWrapper } from "@/components/apply/step-wrapper";
+import { FadeUp } from "@/components/shared/motion";
 import { Step1Personal } from "@/components/apply/steps/step-1-personal";
 import { Step2Location } from "@/components/apply/steps/step-2-location";
 import { Step3Assistance } from "@/components/apply/steps/step-3-assistance";
@@ -98,11 +103,9 @@ export function ApplicationForm() {
     } else if (step === 3) {
       result = step3Schema.safeParse(form.step3);
     } else if (step === 4) {
-      // Custom validation for step 4
       const newErrors: Record<string, string> = {};
       if (!form.uploads.photoPath) {
-        newErrors.applicantPhoto =
-          "Please upload a photo of yourself.";
+        newErrors.applicantPhoto = "Please upload a photo of yourself.";
       }
       if (form.uploads.docs.length === 0) {
         newErrors.supportingDocs =
@@ -203,156 +206,211 @@ export function ApplicationForm() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl">
-      <div className="mb-10">
-        <ProgressBar steps={[...STEPS]} currentStep={current} />
-      </div>
+    <>
+      {/* Hero — only on step 1 */}
+      {current === 1 && (
+        <section className="relative overflow-hidden bg-gradient-to-b from-white via-brand-50/30 to-white">
+          <div className="absolute inset-0 bg-grid opacity-30" aria-hidden />
+          <Container size="md" className="relative py-14 text-center lg:py-20">
+            <FadeUp>
+              <span className="eyebrow mx-auto">
+                <ShieldCheck className="h-3.5 w-3.5" />
+                Apply for Assistance
+              </span>
+            </FadeUp>
+            <FadeUp delay={1}>
+              <h1 className="mt-5 font-display text-3xl font-bold leading-[1.05] tracking-tight text-ink text-balance sm:text-4xl lg:text-5xl">
+                Help is{" "}
+                <span className="text-gradient-brand">
+                  one application away.
+                </span>
+              </h1>
+            </FadeUp>
+            <FadeUp delay={2}>
+              <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-ink-muted text-pretty sm:text-lg">
+                It takes about 10 minutes. It&apos;s free, confidential, and a
+                real human reviews every application — usually within 72
+                hours.
+              </p>
+            </FadeUp>
+            <FadeUp delay={3}>
+              <div className="mx-auto mt-8 flex max-w-2xl flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs text-ink-muted sm:text-sm">
+                <span className="inline-flex items-center gap-2">
+                  <Lock className="h-4 w-4 text-brand-500" />
+                  Fully encrypted
+                </span>
+                <span className="inline-flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-brand-500" />
+                  72-hour review
+                </span>
+                <span className="inline-flex items-center gap-2">
+                  <ShieldCheck className="h-4 w-4 text-brand-500" />
+                  No fees, ever
+                </span>
+              </div>
+            </FadeUp>
+          </Container>
+        </section>
+      )}
 
-      <div className="rounded-3xl border border-surface-border bg-white p-6 shadow-card sm:p-8 lg:p-10">
-        <AnimatePresence mode="wait">
-          <StepWrapper stepKey={`step-${current}`}>
-            {current === 1 && (
-              <>
-                <StepHeader
-                  title="Let's start with the basics"
-                  description="Tell us a little about yourself. All information is kept strictly confidential."
-                />
-                <Step1Personal
-                  data={form.step1}
-                  errors={errors}
-                  update={update1}
-                />
-              </>
-            )}
+      {/* Form body */}
+      <section
+        className={current === 1 ? "pt-6 pb-20 lg:pb-28" : "py-12 lg:py-16"}
+      >
+        <Container size="full">
+          <div className="mx-auto max-w-3xl">
+            <div className="mb-10">
+              <ProgressBar steps={[...STEPS]} currentStep={current} />
+            </div>
 
-            {current === 2 && (
-              <>
-                <StepHeader
-                  title="Where can we reach you?"
-                  description="We serve families worldwide. Tell us where you're located."
-                />
-                <Step2Location
-                  data={form.step2}
-                  errors={errors}
-                  update={update2}
-                />
-              </>
-            )}
+            <div className="rounded-3xl border border-surface-border bg-white p-6 shadow-card sm:p-8 lg:p-10">
+              <AnimatePresence mode="wait">
+                <StepWrapper stepKey={`step-${current}`}>
+                  {current === 1 && (
+                    <>
+                      <StepHeader
+                        title="Let's start with the basics"
+                        description="Tell us a little about yourself. All information is kept strictly confidential."
+                      />
+                      <Step1Personal
+                        data={form.step1}
+                        errors={errors}
+                        update={update1}
+                      />
+                    </>
+                  )}
 
-            {current === 3 && (
-              <>
-                <StepHeader
-                  title="What do you need help with?"
-                  description="There's no wrong answer here. Be honest — we're here to help."
-                />
-                <Step3Assistance
-                  data={form.step3}
-                  errors={errors}
-                  update={update3}
-                />
-              </>
-            )}
+                  {current === 2 && (
+                    <>
+                      <StepHeader
+                        title="Where can we reach you?"
+                        description="We serve families worldwide. Tell us where you're located."
+                      />
+                      <Step2Location
+                        data={form.step2}
+                        errors={errors}
+                        update={update2}
+                      />
+                    </>
+                  )}
 
-            {current === 4 && (
-              <>
-                <StepHeader
-                  title="Upload your documents"
-                  description="These help us verify your situation and process your application faster."
-                />
-                <Step4Documents
-                  uploads={form.uploads}
-                  errors={{
-                    applicantPhoto: errors.applicantPhoto,
-                    supportingDocs: errors.supportingDocs
-                  }}
-                  onUploadsChange={(uploads) =>
-                    setForm((f) => ({ ...f, uploads }))
-                  }
-                />
-              </>
-            )}
+                  {current === 3 && (
+                    <>
+                      <StepHeader
+                        title="What do you need help with?"
+                        description="There's no wrong answer here. Be honest — we're here to help."
+                      />
+                      <Step3Assistance
+                        data={form.step3}
+                        errors={errors}
+                        update={update3}
+                      />
+                    </>
+                  )}
 
-            {current === 5 && (
-              <>
-                <StepHeader
-                  title="One last step"
-                  description="Please confirm the following before submitting your application."
-                />
-                <Step5Consent
-                  agreeTruth={form.step5.agreeTruth ?? false}
-                  agreePrivacy={form.step5.agreePrivacy ?? false}
-                  errors={{
-                    agreeTruth: errors.agreeTruth,
-                    agreePrivacy: errors.agreePrivacy
-                  }}
-                  update={update5}
-                />
-              </>
-            )}
-          </StepWrapper>
-        </AnimatePresence>
+                  {current === 4 && (
+                    <>
+                      <StepHeader
+                        title="Upload your documents"
+                        description="These help us verify your situation and process your application faster."
+                      />
+                      <Step4Documents
+                        uploads={form.uploads}
+                        errors={{
+                          applicantPhoto: errors.applicantPhoto,
+                          supportingDocs: errors.supportingDocs
+                        }}
+                        onUploadsChange={(uploads) =>
+                          setForm((f) => ({ ...f, uploads }))
+                        }
+                      />
+                    </>
+                  )}
 
-        {submitError && (
-          <div className="mt-6 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
-            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
-            <p>{submitError}</p>
-          </div>
-        )}
+                  {current === 5 && (
+                    <>
+                      <StepHeader
+                        title="One last step"
+                        description="Please confirm the following before submitting your application."
+                      />
+                      <Step5Consent
+                        agreeTruth={form.step5.agreeTruth ?? false}
+                        agreePrivacy={form.step5.agreePrivacy ?? false}
+                        errors={{
+                          agreeTruth: errors.agreeTruth,
+                          agreePrivacy: errors.agreePrivacy
+                        }}
+                        update={update5}
+                      />
+                    </>
+                  )}
+                </StepWrapper>
+              </AnimatePresence>
 
-        <div className="mt-10 flex flex-col-reverse gap-3 border-t border-surface-border pt-8 sm:flex-row sm:items-center sm:justify-between">
-          <Button
-            type="button"
-            variant="outline"
-            size="lg"
-            onClick={back}
-            disabled={current === 1 || submitting}
-            className="gap-2"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back
-          </Button>
-
-          {current < STEPS.length ? (
-            <Button
-              type="button"
-              variant="primary"
-              size="lg"
-              onClick={next}
-              className="gap-2"
-            >
-              Continue
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          ) : (
-            <Button
-              type="button"
-              variant="gold"
-              size="lg"
-              onClick={submit}
-              disabled={submitting}
-              className="gap-2"
-            >
-              {submitting ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Submitting...
-                </>
-              ) : (
-                <>
-                  <Send className="h-4 w-4" />
-                  Submit Application
-                </>
+              {submitError && (
+                <div className="mt-6 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+                  <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+                  <p>{submitError}</p>
+                </div>
               )}
-            </Button>
-          )}
-        </div>
-      </div>
 
-      <p className="mt-6 text-center text-xs text-ink-muted">
-        Your information is encrypted and confidential. We never share your
-        details with third parties.
-      </p>
-    </div>
+              <div className="mt-10 flex flex-col-reverse gap-3 border-t border-surface-border pt-8 sm:flex-row sm:items-center sm:justify-between">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="lg"
+                  onClick={back}
+                  disabled={current === 1 || submitting}
+                  className="gap-2"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  Back
+                </Button>
+
+                {current < STEPS.length ? (
+                  <Button
+                    type="button"
+                    variant="primary"
+                    size="lg"
+                    onClick={next}
+                    className="gap-2"
+                  >
+                    Continue
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    variant="gold"
+                    size="lg"
+                    onClick={submit}
+                    disabled={submitting}
+                    className="gap-2"
+                  >
+                    {submitting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Submitting...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="h-4 w-4" />
+                        Submit Application
+                      </>
+                    )}
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            <p className="mt-6 text-center text-xs text-ink-muted">
+              Your information is encrypted and confidential. We never share
+              your details with third parties.
+            </p>
+          </div>
+        </Container>
+      </section>
+    </>
   );
 }
 
