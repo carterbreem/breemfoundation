@@ -10,11 +10,23 @@ export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
     "How Breem Foundation collects, uses, protects, and shares your personal information. Committed to your privacy and data security.",
+  keywords: [
+    "Breem Foundation privacy",
+    "charity privacy policy",
+    "data protection"
+  ],
   openGraph: {
     title: "Privacy Policy · Breem Foundation",
     description:
-      "Transparency about how we handle your data — because trust is earned."
-  }
+      "Transparency about how we handle your data — because trust is earned.",
+    type: "website"
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Privacy Policy · Breem Foundation",
+    description: "Transparency about how we handle your data."
+  },
+  alternates: { canonical: "/privacy" }
 };
 
 const LAST_UPDATED = "January 2026";
@@ -22,7 +34,6 @@ const LAST_UPDATED = "January 2026";
 export default function PrivacyPage() {
   return (
     <>
-      {/* ── HERO ─────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-gradient-to-b from-white via-brand-50/30 to-white">
         <div className="absolute inset-0 bg-grid opacity-30" aria-hidden />
         <Container size="md" className="relative py-16 text-center lg:py-20">
@@ -53,7 +64,6 @@ export default function PrivacyPage() {
         </Container>
       </section>
 
-      {/* ── SUMMARY CARD ─────────────────────────────────── */}
       <section className="bg-white pb-8">
         <Container size="md">
           <FadeUp>
@@ -62,15 +72,15 @@ export default function PrivacyPage() {
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-500 text-white shadow-glow">
                   <Lock className="h-5 w-5" />
                 </span>
-                <div>
+                <div className="min-w-0">
                   <h2 className="font-display text-lg font-semibold text-ink sm:text-xl">
                     The short version
                   </h2>
                   <ul className="mt-3 space-y-2 text-sm leading-relaxed text-ink-muted sm:text-base">
                     <li className="flex gap-2">
                       <span className="text-brand-500">•</span>
-                      We only collect what we need to process your
-                      application or donation.
+                      We only collect what we need to process your application
+                      or donation.
                     </li>
                     <li className="flex gap-2">
                       <span className="text-brand-500">•</span>
@@ -79,7 +89,7 @@ export default function PrivacyPage() {
                     <li className="flex gap-2">
                       <span className="text-brand-500">•</span>
                       Only trained staff and vetted volunteers can access
-                      applications — under signed confidentiality agreements.
+                      applications.
                     </li>
                     <li className="flex gap-2">
                       <span className="text-brand-500">•</span>
@@ -94,10 +104,9 @@ export default function PrivacyPage() {
         </Container>
       </section>
 
-      {/* ── FULL POLICY ──────────────────────────────────── */}
       <section className="section bg-white pt-8">
         <Container size="md">
-          <div className="prose-bf space-y-10">
+          <div className="space-y-10">
             <Section title="1. Who We Are">
               <p>
                 Breem Foundation (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or
@@ -122,8 +131,7 @@ export default function PrivacyPage() {
                   <strong>Application data:</strong> Your name, date of birth,
                   gender, email, phone, address, marital status, employment
                   status, type of assistance requested, reason for need, and
-                  supporting documents you choose to upload (e.g., proof of
-                  hardship, photo ID).
+                  supporting documents you choose to upload.
                 </li>
                 <li>
                   <strong>Donation data:</strong> Donor name, email, chosen
@@ -135,8 +143,7 @@ export default function PrivacyPage() {
                   message content when you reach out via our contact form.
                 </li>
                 <li>
-                  <strong>Technical data:</strong> An anonymous visitor ID
-                  (a random string stored in your browser cookie), country,
+                  <strong>Technical data:</strong> An anonymous visitor ID, country,
                   referrer, and timestamp — used only for aggregate analytics
                   and fraud prevention.
                 </li>
@@ -155,8 +162,7 @@ export default function PrivacyPage() {
               </ul>
               <p className="mt-3">
                 <strong>We never sell, rent, or trade your personal data.</strong>{" "}
-                We don&apos;t run ads. We don&apos;t share your information
-                with third parties for their own marketing.
+                We don&apos;t run ads.
               </p>
             </Section>
 
@@ -165,22 +171,19 @@ export default function PrivacyPage() {
                 If you are located in the European Economic Area (EEA), the
                 United Kingdom, or another jurisdiction with similar laws, we
                 process your personal data under the following legal bases:
-                (a) your consent, (b) performance of a contract or
-                pre-contractual steps, (c) our legitimate interest in
-                preventing fraud and maintaining secure services, and (d)
-                compliance with legal obligations.
+                (a) your consent, (b) performance of a contract, (c) our
+                legitimate interest in preventing fraud and maintaining
+                secure services, and (d) compliance with legal obligations.
               </p>
             </Section>
 
             <Section title="5. How We Protect Your Data">
               <p>
-                We take data security seriously. All personal data is
-                encrypted in transit (TLS/HTTPS) and at rest. Documents you
-                upload are stored in a private, access-controlled storage
-                bucket — never publicly accessible. Access is limited to
-                trained staff and volunteers who have signed confidentiality
-                agreements and are bound by our internal data-handling
-                policy.
+                All personal data is encrypted in transit (TLS/HTTPS) and at
+                rest. Documents you upload are stored in a private,
+                access-controlled storage bucket — never publicly accessible.
+                Access is limited to trained staff and volunteers who have
+                signed confidentiality agreements.
               </p>
               <p>
                 We retain application data for a maximum of 7 years, after
@@ -194,13 +197,12 @@ export default function PrivacyPage() {
                 We share data only with service providers who help us operate
                 — for example, secure cloud hosting and email delivery — and
                 only to the extent necessary. All providers are bound by
-                contracts that require them to protect your data and use it
-                solely for the services we request.
+                contracts that require them to protect your data.
               </p>
               <p>
                 We may disclose information if required by law, court order,
                 or to protect the safety of our staff, applicants, or the
-                public. We will never disclose your data for commercial gain.
+                public.
               </p>
             </Section>
 
@@ -240,9 +242,7 @@ export default function PrivacyPage() {
               <p>
                 Our services are intended for adults 18 and older. If we
                 become aware that we have collected personal information from
-                a child under 13, we will delete it promptly. If you believe a
-                child has submitted information to us, please contact us
-                immediately.
+                a child under 13, we will delete it promptly.
               </p>
             </Section>
 
@@ -250,26 +250,23 @@ export default function PrivacyPage() {
               <p>
                 We may update this policy from time to time. When we do, we
                 will revise the &ldquo;Last updated&rdquo; date at the top of
-                this page and, for material changes, notify affected users
-                directly. Continued use of the site after changes constitutes
+                this page. Continued use of the site after changes constitutes
                 acceptance.
               </p>
             </Section>
 
             <Section title="11. Contact Us">
-              <p>
-                Questions about this policy? We&apos;re here to help.
-              </p>
+              <p>Questions about this policy? We&apos;re here to help.</p>
               <div className="mt-4 flex flex-col gap-3 rounded-xl border border-surface-border bg-surface-soft p-5 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3">
                   <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
                     <Mail className="h-5 w-5" />
                   </span>
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">
                       Email
                     </p>
-                    <p className="text-sm font-medium text-ink">
+                    <p className="break-all text-sm font-medium text-ink">
                       {siteConfig.contactEmail}
                     </p>
                   </div>
@@ -285,7 +282,6 @@ export default function PrivacyPage() {
             </Section>
           </div>
 
-          {/* Bottom nav */}
           <div className="mt-16 border-t border-surface-border pt-8">
             <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
               <p className="text-sm text-ink-muted">
@@ -309,8 +305,6 @@ export default function PrivacyPage() {
   );
 }
 
-/* ── Reusable section ──────────────────────────────────── */
-
 function Section({
   title,
   children
@@ -323,7 +317,7 @@ function Section({
       <h2 className="font-display text-xl font-semibold text-ink sm:text-2xl">
         {title}
       </h2>
-      <div className="mt-4 space-y-3 text-sm leading-relaxed text-ink-muted sm:text-base [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:pl-5 [&_li]:leading-relaxed [&_strong]:text-ink">
+      <div className="mt-4 space-y-3 text-sm leading-relaxed text-ink-muted sm:text-base [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:pl-5 [&_strong]:text-ink">
         {children}
       </div>
     </div>
