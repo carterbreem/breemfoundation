@@ -10,11 +10,22 @@ export const metadata: Metadata = {
   title: "Terms of Service",
   description:
     "The terms and conditions that govern your use of Breem Foundation's website, application process, and donation services.",
+  keywords: [
+    "Breem Foundation terms",
+    "charity terms of service",
+    "user agreement"
+  ],
   openGraph: {
     title: "Terms of Service · Breem Foundation",
-    description:
-      "Clear, plain-English terms for using our services."
-  }
+    description: "Clear, plain-English terms for using our services.",
+    type: "website"
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Terms of Service · Breem Foundation",
+    description: "Clear, plain-English terms for using our services."
+  },
+  alternates: { canonical: "/terms" }
 };
 
 const LAST_UPDATED = "January 2026";
@@ -22,7 +33,6 @@ const LAST_UPDATED = "January 2026";
 export default function TermsPage() {
   return (
     <>
-      {/* ── HERO ─────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-gradient-to-b from-white via-brand-50/30 to-white">
         <div className="absolute inset-0 bg-grid opacity-30" aria-hidden />
         <Container size="md" className="relative py-16 text-center lg:py-20">
@@ -53,7 +63,6 @@ export default function TermsPage() {
         </Container>
       </section>
 
-      {/* ── FULL TERMS ───────────────────────────────────── */}
       <section className="section bg-white">
         <Container size="md">
           <div className="space-y-10">
@@ -73,8 +82,7 @@ export default function TermsPage() {
                 <strong>{siteConfig.taxId}</strong>). Our mission is to
                 provide timely, dignified financial assistance to individuals
                 and families facing hardship. We are not a bank, lender, or
-                financial advisor, and nothing on this Site constitutes
-                financial, legal, or medical advice.
+                financial advisor.
               </p>
             </Section>
 
@@ -93,8 +101,8 @@ export default function TermsPage() {
                   complete to the best of your knowledge.
                 </li>
                 <li>
-                  Any documents you upload are authentic, unaltered, and
-                  relate to your genuine situation.
+                  Any documents you upload are authentic and relate to your
+                  genuine situation.
                 </li>
                 <li>
                   You understand that submitting an application does not
@@ -107,8 +115,7 @@ export default function TermsPage() {
               <p>
                 Every application is reviewed on its own merits by trained
                 staff. We aim to respond within 72 hours but do not guarantee
-                a specific timeframe. All decisions — approvals, rejections,
-                or requests for more information — are made at Breem
+                a specific timeframe. All decisions are made at Breem
                 Foundation&apos;s sole discretion. We do not discriminate on
                 the basis of race, religion, gender, nationality, disability,
                 or any other protected characteristic.
@@ -118,34 +125,13 @@ export default function TermsPage() {
             <Section title="5. Prohibited Conduct">
               <p>You agree not to:</p>
               <ul>
-                <li>
-                  Submit false, misleading, or fraudulent information or
-                  documents.
-                </li>
-                <li>
-                  Impersonate another person or use someone else&apos;s
-                  identity.
-                </li>
-                <li>
-                  Submit multiple applications to circumvent review or abuse
-                  the system.
-                </li>
-                <li>
-                  Use automated tools, bots, or scripts to interact with the
-                  Site.
-                </li>
-                <li>
-                  Attempt to access other users&apos; data or our internal
-                  systems.
-                </li>
-                <li>
-                  Upload malicious files, viruses, or content that infringes
-                  on any third party&apos;s rights.
-                </li>
-                <li>
-                  Use the Site for any unlawful purpose or in violation of
-                  these Terms.
-                </li>
+                <li>Submit false, misleading, or fraudulent information.</li>
+                <li>Impersonate another person.</li>
+                <li>Submit multiple applications to circumvent review.</li>
+                <li>Use automated tools, bots, or scripts to interact with the Site.</li>
+                <li>Attempt to access other users&apos; data or our internal systems.</li>
+                <li>Upload malicious files or content that infringes third-party rights.</li>
+                <li>Use the Site for any unlawful purpose.</li>
               </ul>
               <p className="mt-3">
                 Violation may result in immediate termination of access,
@@ -160,31 +146,18 @@ export default function TermsPage() {
                 charitable programs. By donating, you confirm:
               </p>
               <ul>
+                <li>You are legally permitted to make the donation.</li>
                 <li>
-                  You are legally permitted to make the donation and are the
-                  authorized holder of any payment method used.
-                </li>
-                <li>
-                  You understand donations are voluntary and, once processed,
-                  non-refundable except in cases of documented error or
-                  fraud.
+                  You understand donations are voluntary and non-refundable
+                  except in cases of documented error or fraud.
                 </li>
                 <li>
                   You understand that Breem Foundation is a U.S. 501(c)(3)
                   nonprofit and, subject to applicable law, your donation may
                   be tax-deductible.
                 </li>
-                <li>
-                  You consent to receive an email confirmation of your
-                  donation.
-                </li>
+                <li>You consent to receive an email confirmation.</li>
               </ul>
-              <p className="mt-3">
-                Breem Foundation allocates funds across program areas at its
-                discretion. Where you designate a category (e.g., housing,
-                medical), we will use reasonable efforts to honor that
-                designation.
-              </p>
             </Section>
 
             <Section title="7. Payment Methods">
@@ -193,28 +166,25 @@ export default function TermsPage() {
                 Zelle, or Venmo. After you submit a donation intent, our team
                 will email you the exact payment details for your chosen
                 method. Donations are confirmed once receipt has been
-                verified by our team. We do not store full payment
-                credentials on our servers.
+                verified.
               </p>
             </Section>
 
             <Section title="8. Intellectual Property">
               <p>
-                All content on the Site — including text, graphics, logos,
-                images, and code — is the property of Breem Foundation or its
-                licensors and is protected by copyright and trademark law.
-                You may not copy, reproduce, distribute, or create derivative
-                works without our prior written consent, except for personal,
+                All content on the Site — text, graphics, logos, images, and
+                code — is the property of Breem Foundation or its licensors.
+                You may not copy, reproduce, or create derivative works
+                without our prior written consent, except for personal,
                 non-commercial use.
               </p>
             </Section>
 
             <Section title="9. Third-Party Links">
               <p>
-                The Site may contain links to third-party websites (for
-                example, payment providers or partner organizations). We are
-                not responsible for the content, privacy practices, or terms
-                of those sites. Your use of them is at your own risk.
+                The Site may contain links to third-party websites. We are not
+                responsible for the content, privacy practices, or terms of
+                those sites. Your use of them is at your own risk.
               </p>
             </Section>
 
@@ -223,9 +193,7 @@ export default function TermsPage() {
                 The Site and its content are provided &ldquo;as is&rdquo; and
                 &ldquo;as available.&rdquo; To the fullest extent permitted by
                 law, Breem Foundation disclaims all warranties, express or
-                implied, including merchantability, fitness for a particular
-                purpose, and non-infringement. We do not warrant that the Site
-                will be uninterrupted, error-free, or secure.
+                implied.
               </p>
             </Section>
 
@@ -234,20 +202,18 @@ export default function TermsPage() {
                 To the fullest extent permitted by law, Breem Foundation and
                 its directors, officers, employees, and volunteers shall not
                 be liable for any indirect, incidental, special, consequential,
-                or punitive damages arising from your use of the Site or these
-                Terms. Our total liability shall not exceed one hundred U.S.
-                dollars (US$100).
+                or punitive damages arising from your use of the Site. Our
+                total liability shall not exceed one hundred U.S. dollars
+                (US$100).
               </p>
             </Section>
 
             <Section title="12. Indemnification">
               <p>
                 You agree to indemnify, defend, and hold harmless Breem
-                Foundation and its affiliates, officers, directors,
-                employees, and volunteers from any claims, liabilities,
-                damages, losses, or expenses arising from your violation of
-                these Terms, your misuse of the Site, or your violation of
-                any third party&apos;s rights.
+                Foundation and its affiliates from any claims arising from
+                your violation of these Terms, your misuse of the Site, or
+                your violation of any third party&apos;s rights.
               </p>
             </Section>
 
@@ -255,8 +221,7 @@ export default function TermsPage() {
               <p>
                 We reserve the right to suspend or terminate your access to
                 the Site at any time, without notice, if we believe you have
-                violated these Terms or engaged in conduct harmful to Breem
-                Foundation, other users, or the public.
+                violated these Terms.
               </p>
             </Section>
 
@@ -264,9 +229,8 @@ export default function TermsPage() {
               <p>
                 These Terms are governed by the laws of the United States and
                 the State of Delaware, without regard to conflict-of-law
-                principles. Any dispute arising from these Terms or your use
-                of the Site shall be resolved exclusively in the state or
-                federal courts located in Delaware.
+                principles. Any dispute shall be resolved exclusively in the
+                state or federal courts located in Delaware.
               </p>
             </Section>
 
@@ -275,7 +239,7 @@ export default function TermsPage() {
                 We may update these Terms from time to time. When we do, we
                 will revise the &ldquo;Last updated&rdquo; date at the top of
                 this page. Continued use of the Site after changes
-                constitutes acceptance of the revised Terms.
+                constitutes acceptance.
               </p>
             </Section>
 
@@ -286,11 +250,11 @@ export default function TermsPage() {
                   <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
                     <Mail className="h-5 w-5" />
                   </span>
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">
                       Email
                     </p>
-                    <p className="text-sm font-medium text-ink">
+                    <p className="break-all text-sm font-medium text-ink">
                       {siteConfig.contactEmail}
                     </p>
                   </div>
@@ -306,7 +270,6 @@ export default function TermsPage() {
             </Section>
           </div>
 
-          {/* Bottom nav */}
           <div className="mt-16 border-t border-surface-border pt-8">
             <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
               <p className="text-sm text-ink-muted">
@@ -330,8 +293,6 @@ export default function TermsPage() {
   );
 }
 
-/* ── Reusable section ──────────────────────────────────── */
-
 function Section({
   title,
   children
@@ -344,7 +305,7 @@ function Section({
       <h2 className="font-display text-xl font-semibold text-ink sm:text-2xl">
         {title}
       </h2>
-      <div className="mt-4 space-y-3 text-sm leading-relaxed text-ink-muted sm:text-base [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:pl-5 [&_li]:leading-relaxed [&_strong]:text-ink">
+      <div className="mt-4 space-y-3 text-sm leading-relaxed text-ink-muted sm:text-base [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:pl-5 [&_strong]:text-ink">
         {children}
       </div>
     </div>
