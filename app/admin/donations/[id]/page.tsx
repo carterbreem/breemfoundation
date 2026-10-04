@@ -7,6 +7,9 @@ import { formatDate } from "@/lib/utils";
 import { DonationStatusBadge } from "@/components/admin/status-badge";
 import { EmailDonorButton } from "@/components/admin/email-donor-button";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: "Donation Detail · Admin",
   robots: { index: false, follow: false }
@@ -34,10 +37,9 @@ export default async function DonationDetailPage({ params }: PageProps) {
         Back to Donations
       </Link>
 
-      {/* ── TOP: Email Donor button ──────────────── */}
       <section className="rounded-2xl border-2 border-brand-200 bg-gradient-to-br from-brand-50 to-white p-6 shadow-card sm:p-8">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
+          <div className="min-w-0">
             <h2 className="font-display text-lg font-semibold text-ink">
               Ready to collect this donation?
             </h2>
@@ -55,13 +57,12 @@ export default async function DonationDetailPage({ params }: PageProps) {
         </div>
       </section>
 
-      {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <h1 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
+        <div className="min-w-0">
+          <h1 className="break-words font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
             {donation.isAnonymous ? "Anonymous Donor" : donation.donorName}
           </h1>
-          <p className="mt-1 font-mono text-sm text-ink-muted">
+          <p className="mt-1 break-all font-mono text-sm text-ink-muted">
             {donation.referenceNumber}
           </p>
         </div>
@@ -69,9 +70,7 @@ export default async function DonationDetailPage({ params }: PageProps) {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* ── Left ─────────────────────────────────── */}
-        <div className="space-y-6 lg:col-span-2">
-          {/* Donor */}
+        <div className="min-w-0 space-y-6 lg:col-span-2">
           <section className="rounded-2xl border border-surface-border bg-white p-6 shadow-card">
             <h2 className="mb-5 font-display text-lg font-semibold text-ink">
               Donor Information
@@ -96,7 +95,6 @@ export default async function DonationDetailPage({ params }: PageProps) {
             </div>
           </section>
 
-          {/* Donation */}
           <section className="rounded-2xl border border-surface-border bg-white p-6 shadow-card">
             <h2 className="mb-5 font-display text-lg font-semibold text-ink">
               Donation Details
@@ -122,29 +120,27 @@ export default async function DonationDetailPage({ params }: PageProps) {
                 <p className="text-xs font-semibold uppercase tracking-wider text-brand-800">
                   Dedication
                 </p>
-                <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-ink">
+                <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-relaxed text-ink">
                   {donation.dedication}
                 </p>
               </div>
             )}
           </section>
 
-          {/* Admin notes */}
           {donation.adminNotes && (
             <section className="rounded-2xl border border-surface-border bg-white p-6 shadow-card">
               <h2 className="mb-5 font-display text-lg font-semibold text-ink">
                 Admin Notes
               </h2>
-              <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink-muted">
+              <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-ink-muted">
                 {donation.adminNotes}
               </p>
             </section>
           )}
         </div>
 
-        {/* ── Right ────────────────────────────────── */}
-        <div className="lg:col-span-1">
-          <div className="sticky top-24 space-y-4">
+        <div className="min-w-0 lg:col-span-1">
+          <div className="space-y-4 lg:sticky lg:top-24">
             <section className="rounded-2xl border border-surface-border bg-white p-6 shadow-card">
               <h3 className="mb-4 text-xs font-semibold uppercase tracking-wider text-ink-muted">
                 Timeline
@@ -152,7 +148,7 @@ export default async function DonationDetailPage({ params }: PageProps) {
               <dl className="space-y-3 text-sm">
                 <div>
                   <dt className="text-xs text-ink-muted">Received</dt>
-                  <dd className="mt-0.5 text-ink">
+                  <dd className="mt-0.5 break-words text-ink">
                     {formatDate(donation.createdAt, {
                       month: "short",
                       day: "numeric",
@@ -165,7 +161,7 @@ export default async function DonationDetailPage({ params }: PageProps) {
                 {donation.detailsSentAt && (
                   <div>
                     <dt className="text-xs text-ink-muted">Details Sent</dt>
-                    <dd className="mt-0.5 text-ink">
+                    <dd className="mt-0.5 break-words text-ink">
                       {formatDate(donation.detailsSentAt, {
                         month: "short",
                         day: "numeric",
@@ -179,7 +175,7 @@ export default async function DonationDetailPage({ params }: PageProps) {
                 {donation.completedAt && (
                   <div>
                     <dt className="text-xs text-ink-muted">Completed</dt>
-                    <dd className="mt-0.5 text-ink">
+                    <dd className="mt-0.5 break-words text-ink">
                       {formatDate(donation.completedAt, {
                         month: "short",
                         day: "numeric",
@@ -213,7 +209,7 @@ export default async function DonationDetailPage({ params }: PageProps) {
 
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
-    <div>
+    <div className="min-w-0">
       <p className="text-xs font-semibold uppercase tracking-wider text-ink-muted">
         {label}
       </p>
