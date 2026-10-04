@@ -9,7 +9,6 @@ interface LogoProps {
   className?: string;
   variant?: "default" | "light";
   size?: "sm" | "md" | "lg";
-  /** Disable the secret triple-tap gesture (e.g., for admin pages). */
   disableSecret?: boolean;
 }
 
@@ -26,7 +25,6 @@ export function Logo({
   const isLight = variant === "light";
   const tapCountRef = React.useRef(0);
   const tapTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [ready, setReady] = React.useState(false);
 
   const sizes = {
     sm: { box: "h-8 w-8", text: "text-base", sub: "text-[9px]" },
@@ -34,27 +32,22 @@ export function Logo({
     lg: { box: "h-12 w-12", text: "text-xl", sub: "text-xs" }
   }[size];
 
-  React.useEffect(() => {
-    setReady(true);
-  }, []);
-
   function handleClick(e: React.MouseEvent<HTMLAnchorElement>) {
-    if (disableSecret) return; // normal navigation
+    if (disableSecret) return;
 
     tapCountRef.current += 1;
 
-    // Clear any previous timer
-    if (tapTimerRef.current) clearTimeout(tapTimerRef.current);
+    if (tapTimerRef.current) {
+      clearTimeout(tapTimerRef.current);
+    }
 
     if (tapCountRef.current >= TRIPLE_TAP_COUNT) {
-      // Triple tap detected — go to admin login
       e.preventDefault();
       tapCountRef.current = 0;
       router.push("/admin/login");
       return;
     }
 
-    // Reset counter if no more taps arrive within the window
     tapTimerRef.current = setTimeout(() => {
       tapCountRef.current = 0;
     }, TRIPLE_TAP_WINDOW_MS);
@@ -69,7 +62,6 @@ export function Logo({
         className
       )}
       aria-label="Breem Foundation — Home"
-      data-ready={ready}
     >
       <span
         className={cn(
