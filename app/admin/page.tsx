@@ -8,10 +8,9 @@ import {
   ArrowRight,
   TrendingUp,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Cog
 } from "lucide-react";
-import { Container } from "@/components/ui/container";
-import { Badge } from "@/components/ui/badge";
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
 
@@ -21,7 +20,6 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminOverviewPage() {
-  // Fetch real stats from the database
   const [
     totalApplications,
     pendingApplications,
@@ -40,7 +38,6 @@ export default async function AdminOverviewPage() {
     prisma.message.count({ where: { readAt: null } })
   ]);
 
-  // Latest applications
   const recentApplications = await prisma.application.findMany({
     orderBy: { createdAt: "desc" },
     take: 5,
@@ -54,7 +51,6 @@ export default async function AdminOverviewPage() {
     }
   });
 
-  // Latest donations
   const recentDonations = await prisma.donation.findMany({
     orderBy: { createdAt: "desc" },
     take: 5,
@@ -112,14 +108,24 @@ export default async function AdminOverviewPage() {
 
   return (
     <div className="space-y-6 lg:space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
-          Overview
-        </h1>
-        <p className="mt-1 text-sm text-ink-muted">
-          Live snapshot of Breem Foundation activity.
-        </p>
+      {/* ── Header with gear icon ───────────────────── */}
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <h1 className="font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl">
+            Overview
+          </h1>
+          <p className="mt-1 text-sm text-ink-muted">
+            Live snapshot of Breem Foundation activity.
+          </p>
+        </div>
+
+        <Link
+          href="/admin/settings"
+          aria-label="Settings"
+          className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-surface-border bg-white text-ink-muted shadow-card transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:text-brand-600"
+        >
+          <Cog className="h-5 w-5" />
+        </Link>
       </div>
 
       {/* Stats grid */}
@@ -155,7 +161,7 @@ export default async function AdminOverviewPage() {
         })}
       </div>
 
-      {/* Two-column: recent apps + recent donations */}
+      {/* Two-column recent lists */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Recent Applications */}
         <div className="rounded-2xl border border-surface-border bg-white shadow-card">
@@ -193,24 +199,23 @@ export default async function AdminOverviewPage() {
                   <p className="truncate text-sm font-semibold text-ink">
                     {app.fullName}
                   </p>
-                  <p className="mt-0.5 text-xs text-ink-muted">
+                  <p className="mt-0.5 truncate text-xs text-ink-muted">
                     {app.referenceNumber} · {app.assistanceType}
                   </p>
                 </div>
-                <Badge
-                  variant={
+                <span
+                  className={
                     app.status === "APPROVED"
-                      ? "success"
+                      ? "shrink-0 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-700"
                       : app.status === "REJECTED"
-                        ? "danger"
+                        ? "shrink-0 rounded-full bg-red-50 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-red-700"
                         : app.status === "MORE_INFO_REQUIRED"
-                          ? "gold"
-                          : "info"
+                          ? "shrink-0 rounded-full bg-amber-50 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-amber-700"
+                          : "shrink-0 rounded-full bg-brand-50 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-brand-700"
                   }
-                  size="sm"
                 >
                   {app.status.replace(/_/g, " ")}
-                </Badge>
+                </span>
               </Link>
             ))}
           </div>
@@ -252,11 +257,11 @@ export default async function AdminOverviewPage() {
                   <p className="truncate text-sm font-semibold text-ink">
                     {d.isAnonymous ? "Anonymous Donor" : d.donorName}
                   </p>
-                  <p className="mt-0.5 text-xs text-ink-muted">
+                  <p className="mt-0.5 truncate text-xs text-ink-muted">
                     {d.referenceNumber} · {d.paymentMethod.replace(/_/g, " ")}
                   </p>
                 </div>
-                <div className="text-right">
+                <div className="shrink-0 text-right">
                   <p className="text-sm font-bold text-ink">
                     ${Number(d.amount).toFixed(2)}
                   </p>
