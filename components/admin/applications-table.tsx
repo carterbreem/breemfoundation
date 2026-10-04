@@ -30,13 +30,13 @@ export function ApplicationsTable({ rows }: { rows: Row[] }) {
   }
 
   return (
-    <>
-      {/* Mobile: card list */}
+    <div>
       <div className="space-y-3 lg:hidden">
         {rows.map((row) => {
           const amount = row.amountRequested
             ? Number(row.amountRequested)
             : null;
+
           return (
             <Link
               key={row.id}
@@ -99,7 +99,6 @@ export function ApplicationsTable({ rows }: { rows: Row[] }) {
         })}
       </div>
 
-      {/* Desktop: table */}
       <div className="hidden overflow-hidden rounded-2xl border border-surface-border bg-white shadow-card lg:block">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[820px]">
@@ -120,6 +119,7 @@ export function ApplicationsTable({ rows }: { rows: Row[] }) {
                 const amount = row.amountRequested
                   ? Number(row.amountRequested)
                   : null;
+
                 return (
                   <tr
                     key={row.id}
@@ -142,11 +142,10 @@ export function ApplicationsTable({ rows }: { rows: Row[] }) {
                       {row.assistanceType.charAt(0) +
                         row.assistanceType.slice(1).toLowerCase()}
                     </td>
-                    <td className="px </-5 py-4 text-ink-mdivuted">
+                    <td className="px-5 py-4 text-ink-muted">
                       {row.country}
-                    </>
-td>
-                    <td className="px-             5 py-4">
+                    </td>
+                    <td className="px-5 py-4">
                       {amount ? (
                         <span className="font-semibold text-ink">
                           ${amount.toFixed(2)}
@@ -181,6 +180,6 @@ td>
           </table>
         </div>
       </div>
-    </>
+    </div>
   );
 }
