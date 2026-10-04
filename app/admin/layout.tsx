@@ -1,27 +1,19 @@
-import { headers } from "next/headers";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { AdminTopbar } from "@/components/admin/admin-topbar";
-import { requireAdminPage } from "@/lib/auth/admin-guard";
+import { getCurrentUser } from "@/lib/auth/session";
 
 export default async function AdminLayout({
   children
 }: {
   children: React.ReactNode;
 }) {
-  const h = await headers();
-  const pathname =
-    h.get("x-invoke-path") ??
-    h.get("x-pathname") ??
-    h.get("x-url") ??
-    "";
+  const user = await getCurrentUser();
 
-  // Login page renders WITHOUT the admin shell
-  if (pathname.includes("/admin/login")) {
+  // Not signed in → render children as-is (middleware handles redirect)
+  // Signed in as admin → render with shell
+  if (!user || user.role !== "ADMIN") {
     return <>{children}</>;
   }
-
-  // All other admin routes require auth + shell
-  const user = await requireAdminPage();
 
   return (
     <div className="flex min-h-screen bg-surface-soft">
