@@ -6,15 +6,13 @@ import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import "./globals.css";
 
-// ── Safe fallback for SITE_URL ────────────────────────────
-// Handles: undefined, null, empty string, invalid URL
 function safeSiteUrl(): string {
   const raw = process.env.NEXT_PUBLIC_SITE_URL;
   if (!raw || typeof raw !== "string" || raw.trim() === "") {
     return "https://breemfoundation.vercel.app";
   }
   try {
-    new URL(raw); // throws if invalid
+    new URL(raw);
     return raw;
   } catch {
     return "https://breemfoundation.vercel.app";
@@ -85,6 +83,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
+  userScalable: true,
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#FFFFFF" },
     { media: "(prefers-color-scheme: dark)", color: "#0B5ED7" }
