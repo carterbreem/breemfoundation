@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CheckCircle2, Mail, ShieldCheck } from "lucide-react";
+import { CheckCircle2, ShieldCheck } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Badge } from "@/components/ui/badge";
 import { FadeUp } from "@/components/shared/motion";
 import { CopyButton } from "@/components/apply/copy-button";
+import { DonateSubmitReference } from "@/components/donate/donate-submit-reference";
 import { ImpactCard } from "@/components/donate/impact-card";
 import { siteConfig } from "@/lib/site-config";
 
@@ -21,19 +22,6 @@ interface PageProps {
 export default async function DonateSuccessPage({ searchParams }: PageProps) {
   const { ref } = await searchParams;
   const referenceNumber = (ref ?? "").trim();
-
-  const subject = `Donation Reference — ${referenceNumber}`;
-  const body = `Hello Breem Foundation,
-
-My donation reference number is: ${referenceNumber}
-
-Please send me the payment details for my chosen method.
-
-Thank you.`;
-
-  const mailtoHref = `mailto:${siteConfig.contactEmail}?subject=${encodeURIComponent(
-    subject
-  )}&body=${encodeURIComponent(body)}`;
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-white via-gold-50/30 to-white">
@@ -59,7 +47,7 @@ Thank you.`;
         </FadeUp>
 
         <FadeUp delay={1}>
-          <div className="mx-auto mt-10 max-w-xl rounded-2xl border-2 border-brand-200 bg-white p-6 text-center shadow-lift sm:p-8">
+          <div className="mx-auto mt-10 max-w-xl rounded-2xl border-2 border-brand-200 bg-white p-6 shadow-lift sm:p-8">
             <p className="text-center text-xs font-semibold uppercase tracking-[0.18em] text-ink-muted">
               Your Donation Reference
             </p>
@@ -79,19 +67,21 @@ Thank you.`;
                   </p>
                   <ol className="mt-2 space-y-1.5 text-xs leading-relaxed text-amber-800">
                     <li>
-                      <strong>1.</strong> We&apos;ll email you the exact
-                      payment details for your chosen method.
+                      <strong>1.</strong> Tap the button below to send us your
+                      reference number.
                     </li>
                     <li>
-                      <strong>2.</strong> You send the donation using those
-                      details.
+                      <strong>2.</strong> We reply with the exact payment
+                      details for your chosen method.
                     </li>
                     <li>
-                      <strong>3.</strong> We confirm receipt and email you a
-                      tax-deductible receipt.
+                      <strong>3.</strong> You send the donation, and we confirm
+                      receipt with a tax-deductible receipt.
                     </li>
                   </ol>
                 </div>
+
+                <DonateSubmitReference referenceNumber={referenceNumber} />
               </>
             ) : (
               <div className="mt-5 rounded-xl border border-red-200 bg-red-50 p-4">
@@ -115,33 +105,10 @@ Thank you.`;
         </FadeUp>
 
         <FadeUp delay={2}>
-          <div className="mx-auto mt-8 max-w-xl rounded-2xl border border-brand-100 bg-gradient-to-br from-brand-50 to-white p-6 text-center shadow-card sm:p-8">
-            <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-500 text-white shadow-glow">
-              <Mail className="h-6 w-6" />
-            </span>
-            <h2 className="mt-4 font-display text-xl font-semibold text-ink sm:text-2xl">
-              Want payment details right away?
-            </h2>
-            <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-ink-muted">
-              Tap below to email us with your reference number pre-filled —
-              we&apos;ll reply with the payment details within one business
-              day.
-            </p>
-            <a
-              href={mailtoHref}
-              className="mt-6 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-brand-500 px-6 text-sm font-semibold text-white shadow-card transition-all hover:bg-brand-600 hover:shadow-glow active:scale-[0.98]"
-            >
-              <Mail className="h-4 w-4" />
-              Email Us Now
-            </a>
-          </div>
-        </FadeUp>
-
-        <FadeUp delay={3}>
           <ImpactCard />
         </FadeUp>
 
-        <FadeUp delay={4}>
+        <FadeUp delay={3}>
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
               href="/"
@@ -158,7 +125,7 @@ Thank you.`;
           </div>
         </FadeUp>
 
-        <FadeUp delay={5}>
+        <FadeUp delay={4}>
           <p className="mt-10 flex items-center justify-center gap-1.5 text-center text-xs text-ink-muted">
             <ShieldCheck className="h-3 w-3" />
             Your information is encrypted and confidential.
