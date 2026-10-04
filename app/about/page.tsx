@@ -27,11 +27,24 @@ export const metadata: Metadata = {
   title: "About Us",
   description:
     "Learn about Breem Foundation's mission, vision, and values. A U.S.-registered 501(c)(3) nonprofit helping families facing financial hardship across the world.",
+  keywords: [
+    "about Breem Foundation",
+    "nonprofit mission",
+    "charity values",
+    "501c3 nonprofit"
+  ],
   openGraph: {
     title: "About Breem Foundation",
     description:
-      "Compassion in action — our mission, vision, and the values that guide every decision we make."
-  }
+      "Compassion in action — our mission, vision, and the values that guide every decision we make.",
+    type: "website"
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About Breem Foundation",
+    description: "Compassion in action — our mission, vision, and values."
+  },
+  alternates: { canonical: "/about" }
 };
 
 const values = [
@@ -143,7 +156,6 @@ const goals = [
 export default function AboutPage() {
   return (
     <>
-      {/* ── HERO ─────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-gradient-to-b from-white via-brand-50/30 to-white">
         <div className="absolute inset-0 bg-grid opacity-30" aria-hidden />
         <div
@@ -174,7 +186,6 @@ export default function AboutPage() {
         </Container>
       </section>
 
-      {/* ── MISSION & VISION ─────────────────────────────── */}
       <section className="section bg-white">
         <Container size="full">
           <div className="grid gap-8 lg:grid-cols-2">
@@ -238,7 +249,6 @@ export default function AboutPage() {
         </Container>
       </section>
 
-      {/* ── CORE VALUES ──────────────────────────────────── */}
       <section className="section bg-surface-soft">
         <Container size="full">
           <SectionHeading
@@ -270,7 +280,6 @@ export default function AboutPage() {
         </Container>
       </section>
 
-      {/* ── WHAT WE DO ───────────────────────────────────── */}
       <section className="section bg-white">
         <Container size="full">
           <SectionHeading
@@ -299,7 +308,6 @@ export default function AboutPage() {
         </Container>
       </section>
 
-      {/* ── WHY CHOOSE US ────────────────────────────────── */}
       <section className="section bg-surface-soft">
         <Container size="full">
           <div className="grid gap-12 lg:grid-cols-2 lg:items-center lg:gap-16">
@@ -383,7 +391,6 @@ export default function AboutPage() {
         </Container>
       </section>
 
-      {/* ── IMPACT NUMBERS ───────────────────────────────── */}
       <section className="section bg-white">
         <Container size="full">
           <SectionHeading
@@ -411,7 +418,6 @@ export default function AboutPage() {
 
       <Stats />
 
-      {/* ── FUTURE GOALS ─────────────────────────────────── */}
       <section className="section bg-surface-soft">
         <Container size="full">
           <SectionHeading
@@ -446,7 +452,6 @@ export default function AboutPage() {
         </Container>
       </section>
 
-      {/* ── CTA ──────────────────────────────────────────── */}
       <CTABanner
         title="Be part of the story."
         description="Whether you need help or want to give it — you're welcome here. Let's build something that lasts."
