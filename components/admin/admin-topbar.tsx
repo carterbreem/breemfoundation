@@ -14,12 +14,17 @@ export function AdminTopbar({ email, name }: Props) {
   const [loggingOut, setLoggingOut] = useState(false);
 
   async function logout() {
+    if (loggingOut) return;
     setLoggingOut(true);
+
+    // Navigate immediately, don't wait for the API
+    router.push("/admin/login");
+
+    // Fire-and-forget the logout API
     try {
       await fetch("/api/auth/logout", { method: "POST" });
-      router.push("/admin/login");
     } catch {
-      setLoggingOut(false);
+      // ignore
     }
   }
 
@@ -48,13 +53,16 @@ export function AdminTopbar({ email, name }: Props) {
           onClick={logout}
           disabled={loggingOut}
           aria-label="Sign out"
-          className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-surface-border bg-white text-ink-muted transition-all hover:border-red-200 hover:text-red-600"
+          className="inline-flex h-9 items-center gap-2 rounded-full border border-surface-border bg-white px-3 text-xs font-semibold text-ink-muted transition-all hover:border-red-200 hover:text-red-600 disabled:opacity-50"
         >
           {loggingOut ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
           ) : (
-            <LogOut className="h-4 w-4" />
+            <LogOut className="h-3.5 w-3.5" />
           )}
+          <span className="hidden sm:inline">
+            {loggingOut ? "Signing out..." : "Sign Out"}
+          </span>
         </button>
       </div>
     </header>
