@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { DollarSign } from "lucide-react";
+import { DollarSign, AlertCircle } from "lucide-react";
 import { DonationsTable } from "@/components/admin/donations-table";
 import { ExportButtons } from "@/components/admin/export-buttons";
 import { prisma } from "@/lib/prisma";
 import type { DonationStatus, PaymentMethod, Prisma } from "@prisma/client";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: "Donations · Admin",
@@ -27,19 +30,24 @@ export default async function AdminDonationsPage({ searchParams }: PageProps) {
   const method = params.method ?? "";
   const page = Math.max(1, Number(params.page ?? "1") || 1);
 
-  const where: Prisma.DonationWhereInput = {};
-  if (status) where.status = status as DonationStatus;
-  if (method) where.paymentMethod = method as PaymentMethod;
+  let total = 0;
+  let rows: Awaited<ReturnType<typeof fetchDonations>> = [];
+  let loadError = "";
 
-  const [total, rows] = await Promise.all([
-    prisma.donation.count({ where }),
-    prisma.donation.findMany({
-      where,
-      orderBy: { createdAt: "desc" },
-      skip: (page - 1) * PAGE_SIZE,
-      take: PAGE_SIZE
-    })
-  ]);
+  try {
+    const where: Prisma.DonationWhereInput = {};
+    if (status) where.status = status as DonationStatus;
+    if (method) where.paymentMethod = method as PaymentMethod;
+
+    [total, rows] = await Promise.all([
+      prisma.donation.count({ where }),
+      fetchDonations(where, page)
+    ]);
+  } catch (err) {
+    const detail = err instanceof Error ? err.message : "Unknown error";
+    console.error("[admin/donations] Load failed:", detail);
+    loadError = detail;
+  }
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
@@ -63,18 +71,22 @@ export default async function AdminDonationsPage({ searchParams }: PageProps) {
         </div>
       </div>
 
+      {loadError && (
+        <div className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+          <div>
+            <p className="font-semibold">Couldn&apos;t load donations.</p>
+            <p className="mt-1 break-words text-xs opacity-80">
+              {loadError}
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col gap-3 rounded-2xl border border-surface-border bg-white p-4 shadow-card sm:flex-row">
         <select
           value={status}
-          onChange={(e) => {
-            const url = new URL(window.location.href);
-            if (e.target.value) url.searchParams.set("status", e.target.value);
-            else url.searchParams.delete("status");
-            url.searchParams.delete("page");
-            window.location.href = url.toString();
-          }}
           className="h-11 rounded-xl border border-surface-border bg-white px-3 text-sm text-ink focus-visible:outline-none focus-visible:border-brand-400"
-          defaultValue={status}
         >
           <option value="">All statuses</option>
           <option value="PENDING_PAYMENT">Pending Payment</option>
@@ -86,15 +98,7 @@ export default async function AdminDonationsPage({ searchParams }: PageProps) {
 
         <select
           value={method}
-          onChange={(e) => {
-            const url = new URL(window.location.href);
-            if (e.target.value) url.searchParams.set("method", e.target.value);
-            else url.searchParams.delete("method");
-            url.searchParams.delete("page");
-            window.location.href = url.toString();
-          }}
           className="h-11 rounded-xl border border-surface-border bg-white px-3 text-sm text-ink focus-visible:outline-none focus-visible:border-brand-400"
-          defaultValue={method}
         >
           <option value="">All methods</option>
           <option value="BANK_TRANSFER">Bank Transfer</option>
@@ -105,9 +109,9 @@ export default async function AdminDonationsPage({ searchParams }: PageProps) {
         </select>
       </div>
 
-      <DonationsTable rows={rows} />
+      {!loadError && <DonationsTable rows={rows} />}
 
-      {totalPages > 1 && (
+      {totalPages > 1 && !loadError && (
         <div className="flex items-center justify-between rounded-2xl border border-surface-border bg-white p-4 shadow-card">
           <Link
             href={`/admin/donations?page=${Math.max(1, page - 1)}${status ? `&status=${status}` : ""}${method ? `&method=${method}` : ""}`}
@@ -137,4 +141,26 @@ export default async function AdminDonationsPage({ searchParams }: PageProps) {
       )}
     </div>
   );
+}
+
+async function fetchDonations(where: Prisma.DonationWhereInput, page: number) {
+  return prisma.donation.findMany({
+    where,
+    orderBy: { createdAt: "desc" },
+    skip: (page - 1) * PAGE_SIZE,
+    take: PAGE_SIZE,
+    select: {
+      id: true,
+      referenceNumber: true,
+      donorName: true,
+      donorEmail: true,
+      isAnonymous: true,
+      amount: true,
+      currency: true,
+      frequency: true,
+      paymentMethod: true,
+      status: true,
+      createdAt: true
+    }
+  });
 }
