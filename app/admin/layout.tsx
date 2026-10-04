@@ -2,6 +2,12 @@ import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { AdminTopbar } from "@/components/admin/admin-topbar";
 import { getCurrentUser } from "@/lib/auth/session";
 
+// Force every /admin/* page to render dynamically.
+// This cascades to all child pages, so we don't need to add
+// `export const dynamic` to each one individually.
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function AdminLayout({
   children
 }: {
@@ -9,8 +15,9 @@ export default async function AdminLayout({
 }) {
   const user = await getCurrentUser();
 
-  // Not signed in → render children as-is (middleware handles redirect)
-  // Signed in as admin → render with shell
+  // Not signed in or not admin → render children bare.
+  // The /admin/login page needs to render; middleware handles
+  // redirects for other routes.
   if (!user || user.role !== "ADMIN") {
     return <>{children}</>;
   }
