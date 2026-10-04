@@ -12,17 +12,27 @@ export const metadata: Metadata = {
   title: "Success Stories",
   description:
     "Real stories of families and individuals whose lives changed through Breem Foundation. Housing, medical, food, education, and emergency assistance in action.",
+  keywords: [
+    "Breem Foundation stories",
+    "charity success stories",
+    "family assistance stories"
+  ],
   openGraph: {
     title: "Success Stories · Breem Foundation",
-    description:
-      "Real families. Real change. See the impact of your generosity."
-  }
+    description: "Real families. Real change. See the impact of your generosity.",
+    type: "website"
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Success Stories · Breem Foundation",
+    description: "Real families. Real change. See the impact."
+  },
+  alternates: { canonical: "/stories" }
 };
 
 export default function StoriesPage() {
   return (
     <>
-      {/* ── HERO ─────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-gradient-to-b from-white via-brand-50/30 to-white">
         <div className="absolute inset-0 bg-grid opacity-30" aria-hidden />
         <div
@@ -39,7 +49,9 @@ export default function StoriesPage() {
           <FadeUp delay={1}>
             <h1 className="mt-5 font-display text-4xl font-bold leading-[1.05] tracking-tight text-ink text-balance sm:text-5xl lg:text-6xl">
               Every story starts with{" "}
-              <span className="text-gradient-brand">someone saying yes.</span>
+              <span className="text-gradient-brand">
+                someone saying yes.
+              </span>
             </h1>
           </FadeUp>
           <FadeUp delay={2}>
@@ -52,7 +64,6 @@ export default function StoriesPage() {
         </Container>
       </section>
 
-      {/* ── STATS BAR ────────────────────────────────────── */}
       <section className="border-y border-surface-border bg-surface-soft">
         <Container size="full" className="py-8">
           <div className="grid gap-6 text-center sm:grid-cols-3 sm:divide-x sm:divide-surface-border">
@@ -74,7 +85,6 @@ export default function StoriesPage() {
         </Container>
       </section>
 
-      {/* ── ALL STORIES ──────────────────────────────────── */}
       <section className="section bg-white">
         <Container size="full">
           <SectionHeading
@@ -93,7 +103,6 @@ export default function StoriesPage() {
         </Container>
       </section>
 
-      {/* ── SHARE YOUR STORY ─────────────────────────────── */}
       <section className="section bg-surface-soft">
         <Container size="md">
           <FadeUp>
@@ -122,7 +131,6 @@ export default function StoriesPage() {
         </Container>
       </section>
 
-      {/* ── CTA ──────────────────────────────────────────── */}
       <CTABanner
         title="Your donation writes the next story."
         description="Every gift — one-time or monthly — becomes someone's rent, someone's surgery, someone's graduation."
