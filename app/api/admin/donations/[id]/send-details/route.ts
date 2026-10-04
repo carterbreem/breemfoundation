@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth/session";
 import { buildDonorEmail } from "@/lib/donations/email-templates";
 import { sendTelegramMessage, escapeTelegramHtml } from "@/lib/telegram";
-import type { PaymentMethod } from "@prisma/client";
+import type { PaymentMethodKey } from "@/lib/payment-methods";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -12,13 +12,6 @@ interface RouteProps {
   params: Promise<{ id: string }>;
 }
 
-/**
- * Returns the mailto link with the pre-filled donor email AND marks the
- * donation as PAYMENT_DETAILS_SENT.
- *
- * The admin dashboard calls this and then opens the mailto URL. That way
- * the status transition and the email delivery are tied together.
- */
 export async function POST(req: NextRequest, { params }: RouteProps) {
   try {
     const admin = await requireAdmin();
@@ -39,6 +32,13 @@ export async function POST(req: NextRequest, { params }: RouteProps) {
       );
     }
 
+    // Normalize the payment method — if it's "OTHER", fall back to BANK_TRANSFER
+    // so we always have a valid template.
+    const normalizedMethod: PaymentMethodKey =
+      donation.paymentMethod === "OTHER"
+        ? "BANK_TRANSFER"
+        : (donation.paymentMethod as PaymentMethodKey);
+
     const email = buildDonorEmail({
       donorEmail: donation.donorEmail,
       donorName: donation.donorName,
@@ -46,11 +46,10 @@ export async function POST(req: NextRequest, { params }: RouteProps) {
       referenceNumber: donation.referenceNumber,
       amount: Number(donation.amount).toFixed(2),
       frequency: donation.frequency as "ONE_TIME" | "MONTHLY",
-      paymentMethod: donation.paymentMethod as PaymentMethod,
+      paymentMethod: normalizedMethod,
       customDetails: body.customDetails
     });
 
-    // Update status
     const updated = await prisma.donation.update({
       where: { id },
       data: {
