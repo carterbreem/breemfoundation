@@ -8,7 +8,7 @@ import {
   DollarSign,
   MessageSquare,
   BookOpen,
-  Settings,
+  Cog,
   Home,
   type LucideIcon
 } from "lucide-react";
@@ -27,7 +27,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/admin/donations", label: "Donations", Icon: DollarSign },
   { href: "/admin/messages", label: "Messages", Icon: MessageSquare },
   { href: "/admin/content", label: "Content", Icon: BookOpen },
-  { href: "/admin/settings", label: "Settings", Icon: Settings }
+  { href: "/admin/settings", label: "Settings", Icon: Cog }
 ];
 
 export function AdminSidebar() {
@@ -40,13 +40,23 @@ export function AdminSidebar() {
 
   return (
     <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-white/10 bg-ink text-white lg:flex">
-      {/* Logo */}
       <div className="flex h-16 items-center gap-3 border-b border-white/10 px-5">
-        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-500 text-white shadow-glow">
-          <svg viewBox="0 0 32 32" fill="none" className="h-4 w-4" aria-hidden>
+        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-500 text-white">
+          <svg viewBox="0 0 64 64" fill="none" className="h-5 w-5" aria-hidden>
+            <circle cx="32" cy="24" r="7" fill="#F4B400" />
             <path
-              d="M7 5h11.5c4.14 0 7 2.46 7 6.2 0 2.7-1.4 4.5-3.6 5.2v.16c2.6.55 4.3 2.5 4.3 5.5 0 4.3-3.16 7.14-7.96 7.14H7V5Zm5.4 4.4v6.2h5c2.1 0 3.4-1.1 3.4-3.1 0-2-1.3-3.1-3.4-3.1h-5Zm0 10.1v6.7h5.4c2.4 0 3.9-1.24 3.9-3.35 0-2.1-1.5-3.35-3.9-3.35h-5.4Z"
-              fill="currentColor"
+              d="M32 44 C 22 36, 16 30, 16 24 C 16 19, 20 15, 25 15 C 28 15, 30.5 17, 32 19.5 C 33.5 17, 36 15, 39 15 C 44 15, 48 19, 48 24 C 48 30, 42 36, 32 44 Z"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M12 42 C 12 42, 16 50, 24 52 C 28 53, 36 53, 40 52 C 48 50, 52 42, 52 42"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
             />
           </svg>
         </span>
@@ -60,7 +70,6 @@ export function AdminSidebar() {
         </div>
       </div>
 
-      {/* Nav */}
       <nav className="flex-1 space-y-1 overflow-y-auto p-3">
         {NAV_ITEMS.map(({ href, label, Icon, exact }) => {
           const active = isActive(href, exact);
@@ -87,7 +96,6 @@ export function AdminSidebar() {
         })}
       </nav>
 
-      {/* Footer link back to site */}
       <div className="border-t border-white/10 p-3">
         <Link
           href="/"
