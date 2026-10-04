@@ -13,17 +13,29 @@ export const metadata: Metadata = {
   title: "Frequently Asked Questions",
   description:
     "Answers to common questions about applying for assistance, eligibility, documents, timelines, and donations at Breem Foundation.",
+  keywords: [
+    "Breem Foundation FAQ",
+    "charity eligibility",
+    "how to apply for assistance",
+    "donation questions"
+  ],
   openGraph: {
     title: "FAQ · Breem Foundation",
     description:
-      "Everything you need to know before applying for assistance or making a donation."
-  }
+      "Everything you need to know before applying for assistance or making a donation.",
+    type: "website"
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "FAQ · Breem Foundation",
+    description: "Everything you need to know."
+  },
+  alternates: { canonical: "/faq" }
 };
 
 export default function FaqPage() {
   return (
     <>
-      {/* ── HERO ─────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-gradient-to-b from-white via-brand-50/30 to-white">
         <div className="absolute inset-0 bg-grid opacity-30" aria-hidden />
         <Container size="md" className="relative py-20 text-center lg:py-24">
@@ -36,7 +48,9 @@ export default function FaqPage() {
           <FadeUp delay={1}>
             <h1 className="mt-5 font-display text-4xl font-bold leading-[1.05] tracking-tight text-ink text-balance sm:text-5xl lg:text-6xl">
               Answers,{" "}
-              <span className="text-gradient-brand">without the runaround.</span>
+              <span className="text-gradient-brand">
+                without the runaround.
+              </span>
             </h1>
           </FadeUp>
           <FadeUp delay={2}>
@@ -49,14 +63,12 @@ export default function FaqPage() {
         </Container>
       </section>
 
-      {/* ── FAQ LIST ─────────────────────────────────────── */}
       <section className="section bg-white">
         <Container size="md">
           <FaqList />
         </Container>
       </section>
 
-      {/* ── STILL HAVE QUESTIONS ─────────────────────────── */}
       <section className="section bg-surface-soft">
         <Container size="md">
           <FadeUp>
@@ -96,7 +108,6 @@ export default function FaqPage() {
         </Container>
       </section>
 
-      {/* ── CTA ──────────────────────────────────────────── */}
       <CTABanner />
     </>
   );
