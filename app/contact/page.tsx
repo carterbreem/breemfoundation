@@ -22,11 +22,23 @@ export const metadata: Metadata = {
   title: "Contact Us",
   description:
     "Get in touch with Breem Foundation. Email, phone, or send us a message — we respond within one business day.",
+  keywords: [
+    "contact Breem Foundation",
+    "charity contact",
+    "reach nonprofit"
+  ],
   openGraph: {
     title: "Contact Breem Foundation",
     description:
-      "Questions, partnerships, press, or applications — we'd love to hear from you."
-  }
+      "Questions, partnerships, press, or applications — we'd love to hear from you.",
+    type: "website"
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Contact Breem Foundation",
+    description: "Questions? We'd love to hear from you."
+  },
+  alternates: { canonical: "/contact" }
 };
 
 const socialIcons = [
@@ -40,7 +52,6 @@ const socialIcons = [
 export default function ContactPage() {
   return (
     <>
-      {/* ── HERO ─────────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-gradient-to-b from-white via-brand-50/30 to-white">
         <div className="absolute inset-0 bg-grid opacity-30" aria-hidden />
         <div
@@ -69,11 +80,9 @@ export default function ContactPage() {
         </Container>
       </section>
 
-      {/* ── CONTACT GRID ─────────────────────────────────── */}
       <section className="section bg-white">
         <Container size="full">
           <div className="grid gap-10 lg:grid-cols-5 lg:gap-16">
-            {/* Left: contact details */}
             <div className="lg:col-span-2">
               <FadeUp>
                 <SectionHeading
@@ -93,7 +102,7 @@ export default function ContactPage() {
                     <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition-all group-hover:bg-brand-500 group-hover:text-white">
                       <Mail className="h-5 w-5" />
                     </span>
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">
                         Email
                       </p>
@@ -112,7 +121,7 @@ export default function ContactPage() {
                     <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition-all group-hover:bg-brand-500 group-hover:text-white">
                       <Phone className="h-5 w-5" />
                     </span>
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">
                         Phone
                       </p>
@@ -128,7 +137,7 @@ export default function ContactPage() {
                     <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
                       <MapPin className="h-5 w-5" />
                     </span>
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">
                         Location
                       </p>
@@ -144,7 +153,7 @@ export default function ContactPage() {
                     <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gold-50 text-gold-600">
                       <Clock className="h-5 w-5" />
                     </span>
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">
                         Response Time
                       </p>
@@ -156,7 +165,6 @@ export default function ContactPage() {
                 </FadeUp>
               </div>
 
-              {/* Social */}
               <FadeUp delay={5}>
                 <div className="mt-10">
                   <p className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">
@@ -180,7 +188,6 @@ export default function ContactPage() {
               </FadeUp>
             </div>
 
-            {/* Right: form */}
             <div className="lg:col-span-3">
               <FadeUp delay={1}>
                 <div className="rounded-3xl border border-surface-border bg-white p-6 shadow-card sm:p-8 lg:p-10">
