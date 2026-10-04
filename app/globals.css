@@ -19,7 +19,6 @@
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   max-width: 100vw;
 }
@@ -34,10 +33,7 @@ body {
   -webkit-text-size-adjust: 100%;
 }
 
-img,
-svg,
-video,
-canvas {
+img, svg, video, canvas {
   max-width: 100%;
   height: auto;
 }
@@ -54,33 +50,16 @@ p, a, span, li, div {
   overflow-wrap: anywhere;
 }
 
-::selection {
-  background-color: rgba(11, 94, 215, 0.15);
-  color: #0F172A;
-}
-
 :focus-visible {
   outline: 2px solid #0B5ED7;
   outline-offset: 2px;
-  border-radius: 4px;
 }
 
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+pre, code {
+  overflow-x: auto;
+  max-width: 100%;
+  word-break: break-word;
 }
-::-webkit-scrollbar-track {
-  background: #F8FAFC;
-}
-::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
-  border-radius: 999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #94A3B8;
-}
-
-/* ── Layout ─────────────────────────────────────────── */
 
 .container-page {
   width: 100%;
@@ -105,21 +84,6 @@ p, a, span, li, div {
   }
 }
 
-/* Prevent tables from overflowing */
-.table-responsive {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* Prevent code/pre from overflowing */
-pre, code {
-  overflow-x: auto;
-  max-width: 100%;
-  word-break: break-word;
-}
-
-/* ── Sections ──────────────────────────────────────── */
-
 .section {
   padding-top: 3rem;
   padding-bottom: 3rem;
@@ -132,23 +96,14 @@ pre, code {
   }
 }
 
-@media (min-width: 1024px) {
-  .section {
-    padding-top: 6rem;
-    padding-sp-bottom: 6rem;
-  }
-}
-
-acing/* ── Utilities ─────────────────:─────────────────────── */
-
-.eyeb 0row {
-  display: inline.-flex;
+.eyebrow {
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter18em;
+  letter-spacing: 0.18em;
   color: #0A54C2;
 }
 
@@ -171,12 +126,7 @@ acing/* ── Utilities ─────────────────:─
   border: 1px solid #E2E8F0;
   background-color: #FFFFFF;
   transition: all 300ms ease;
-  box-shadow: 0 4px 20px -4px rgb(15 23 42 / 0.08);
-}
-
-.card-hover:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px -12px rgb(15 23 42 / 0.15);
+  box-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.08);
 }
 
 .bg-grid {
@@ -190,11 +140,4 @@ acing/* ── Utilities ─────────────────:─
 
 .text-pretty {
   text-wrap: pretty;
-}
-
-/* Mobile-only: full width buttons and cards */
-@media (max-width: 639px) {
-  .card-base {
-    border-radius: 0.875rem;
-  }
 }
