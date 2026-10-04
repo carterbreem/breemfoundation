@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CheckCircle2, Mail, ShieldCheck, Heart } from "lucide-react";
+import { CheckCircle2, Mail, ShieldCheck } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Badge } from "@/components/ui/badge";
 import { FadeUp } from "@/components/shared/motion";
 import { CopyButton } from "@/components/apply/copy-button";
+import { ImpactCard } from "@/components/donate/impact-card";
 import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
@@ -21,8 +22,8 @@ export default async function DonateSuccessPage({ searchParams }: PageProps) {
   const { ref } = await searchParams;
   const referenceNumber = (ref ?? "").trim();
 
-  const emailSubject = `Donation Reference — ${referenceNumber}`;
-  const emailBody = `Hello Breem Foundation,
+  const subject = `Donation Reference — ${referenceNumber}`;
+  const body = `Hello Breem Foundation,
 
 My donation reference number is: ${referenceNumber}
 
@@ -31,8 +32,8 @@ Please send me the payment details for my chosen method.
 Thank you.`;
 
   const mailtoHref = `mailto:${siteConfig.contactEmail}?subject=${encodeURIComponent(
-    emailSubject
-  )}&body=${encodeURIComponent(emailBody)}`;
+    subject
+  )}&body=${encodeURIComponent(body)}`;
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-white via-gold-50/30 to-white">
@@ -48,9 +49,7 @@ Thank you.`;
           </Badge>
           <h1 className="mt-5 font-display text-3xl font-bold leading-tight tracking-tight text-ink text-balance sm:text-4xl lg:text-5xl">
             Thank you —{" "}
-            <span className="text-gradient-gold">
-              you made a difference.
-            </span>
+            <span className="text-gradient-gold">you made a difference.</span>
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-ink-muted text-pretty sm:text-lg">
             We&apos;ve received your donation intent and our team will email
@@ -95,7 +94,7 @@ Thank you.`;
                 </div>
               </>
             ) : (
-              <div className="mt-5 rounded-xl border border-red-200 bg-red-50 p-4 text-center">
+              <div className="mt-5 rounded-xl border border-red-200 bg-red-50 p-4">
                 <p className="text-sm font-semibold text-red-900">
                   Reference number missing
                 </p>
@@ -135,58 +134,24 @@ Thank you.`;
               <Mail className="h-4 w-4" />
               Email Us Now
             </a>
-            <p className="mt-3 text-center text-xs text-ink-muted">
-              Opens your email app — pre-filled and ready to send.
-            </p>
           </div>
         </FadeUp>
 
         <FadeUp delay={3}>
-          <div className="mx-auto mt-10 max-w-2xl rounded-2xl border border-surface-border bg-white p-6 shadow-card sm:p-8">
-            <div className="flex items-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gold-50 text-gold-600">
-                <Heart className="h-5 w-5" />
-              </span>
-              <h3 className="font-display text-lg font-semibold text-ink">
-                What your donation supports
-              </h3>
-            </div>
-            <ul classNamespan="mt-5 space-y-3 text-sm>
- leading-relaxed text-ink-muted">
-                <span              <li className="flex gap-3">
-                <span className="text-brand-500">•</>Emergency rent and utility relief for families at risk of losing their home</span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-brand-500">•</span>
-                <span>Medical and surgical support for individuals facing life-threatening conditions</span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-brand-500">•</span>
-                <span>Food security and grocery assistance for households in crisis</span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-brand-500">•</span>
-                <span>Education grants so students can finish what they started</span>
-              </li>
-            </ul>
-            <p className="mt-6 border-t border-surface-border pt-5 text-xs text-ink-muted">
-              <strong className="text-ink">91 cents</strong> of every dollar
-              reaches families directly.
-            </p>
-          </div>
+          <ImpactCard />
         </FadeUp>
 
         <FadeUp delay={4}>
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
               href="/"
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-brand-500 px-6 text-sm font-semibold text-white shadow-card transition-all hover:bg-brand-600 hover:shadow-glow"
+              className="inline-flex h-11 items-center justify-center rounded-full bg-brand-500 px-6 text-sm font-semibold text-white shadow-card transition-all hover:bg-brand-600 hover:shadow-glow"
             >
               Back to Home
             </Link>
             <Link
               href="/stories"
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-surface-border bg-white px-6 text-sm font-semibold text-ink transition-all hover:border-brand-200 hover:text-brand-600"
+              className="inline-flex h-11 items-center justify-center rounded-full border border-surface-border bg-white px-6 text-sm font-semibold text-ink transition-all hover:border-brand-200 hover:text-brand-600"
             >
               See Your Impact
             </Link>
