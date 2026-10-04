@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { DollarSign } from "lucide-react";
 import { DonationsTable } from "@/components/admin/donations-table";
+import { ExportButtons } from "@/components/admin/export-buttons";
 import { prisma } from "@/lib/prisma";
 import type { DonationStatus, PaymentMethod, Prisma } from "@prisma/client";
 
@@ -53,13 +54,15 @@ export default async function AdminDonationsPage({ searchParams }: PageProps) {
             {total} total · Page {page} of {totalPages}
           </p>
         </div>
-        <span className="inline-flex items-center gap-2 self-start rounded-full bg-gold-50 px-3 py-1.5 text-xs font-semibold text-gold-700">
-          <DollarSign className="h-3.5 w-3.5" />
-          {total} donation{total === 1 ? "" : "s"}
-        </span>
+        <div className="flex flex-wrap items-center gap-2 self-start">
+          <ExportButtons type="donations" />
+          <span className="inline-flex items-center gap-2 rounded-full bg-gold-50 px-3 py-1.5 text-xs font-semibold text-gold-700">
+            <DollarSign className="h-3.5 w-3.5" />
+            {total} donation{total === 1 ? "" : "s"}
+          </span>
+        </div>
       </div>
 
-      {/* Filters */}
       <div className="flex flex-col gap-3 rounded-2xl border border-surface-border bg-white p-4 shadow-card sm:flex-row">
         <select
           value={status}
