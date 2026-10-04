@@ -1,8 +1,3 @@
-/**
- * Single source of truth for site-wide content.
- * Nav links, footer links, social, contact info, and legal.
- */
-
 export const siteConfig = {
   name: "Breem Foundation",
   shortName: "Breem",
@@ -41,7 +36,8 @@ export const siteConfig = {
     help: [
       { label: "Apply for Assistance", href: "/apply" },
       { label: "Donate", href: "/donate" },
-      { label: "Frequently Asked Questions", href: "/faq" }
+      { label: "Frequently Asked Questions", href: "/faq" },
+      { label: "Track Application", href: "/track" }
     ],
     legal: [
       { label: "Privacy Policy", href: "/privacy" },
