@@ -108,8 +108,8 @@ Thank you.`;
                   Reference number missing
                 </p>
                 <p className="mt-1 text-xs leading-relaxed text-red-800">
-                  We couldn&apos;t generate a reference number. Please reply
-                  to this page or email us at{" "}
+                  We couldn&apos;t generate a reference number. Please email
+                  us at{" "}
                   <a
                     href={`mailto:${siteConfig.contactEmail}`}
                     className="font-semibold underline"
