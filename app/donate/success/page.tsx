@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CheckCircle2, Mail, ShieldCheck, Clock, Heart } from "lucide-react";
+import { CheckCircle2, Mail, ShieldCheck, Heart } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Badge } from "@/components/ui/badge";
 import { FadeUp } from "@/components/shared/motion";
@@ -8,7 +8,7 @@ import { CopyButton } from "@/components/apply/copy-button";
 import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = {
-  title: "Donation Intent Received",
+  title: "Donation Received",
   description: "Thank you for supporting Breem Foundation.",
   robots: { index: false, follow: false }
 };
@@ -44,10 +44,13 @@ Thank you.`;
             <CheckCircle2 className="h-8 w-8" />
           </span>
           <Badge variant="success" size="lg" className="mt-6">
-            Donation Intent Received
+            Donation Received
           </Badge>
           <h1 className="mt-5 font-display text-3xl font-bold leading-tight tracking-tight text-ink text-balance sm:text-4xl lg:text-5xl">
-            Thank you — <span className="text-gradient-gold">you made a difference.</span>
+            Thank you —{" "}
+            <span className="text-gradient-gold">
+              you made a difference.
+            </span>
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-ink-muted text-pretty sm:text-lg">
             We&apos;ve received your donation intent and our team will email
@@ -56,7 +59,6 @@ Thank you.`;
           </p>
         </FadeUp>
 
-        {/* Reference */}
         <FadeUp delay={1}>
           <div className="mx-auto mt-10 max-w-xl rounded-2xl border-2 border-brand-200 bg-white p-6 text-center shadow-lift sm:p-8">
             <p className="text-center text-xs font-semibold uppercase tracking-[0.18em] text-ink-muted">
@@ -113,7 +115,6 @@ Thank you.`;
           </div>
         </FadeUp>
 
-        {/* Immediate contact CTA */}
         <FadeUp delay={2}>
           <div className="mx-auto mt-8 max-w-xl rounded-2xl border border-brand-100 bg-gradient-to-br from-brand-50 to-white p-6 text-center shadow-card sm:p-8">
             <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-500 text-white shadow-glow">
@@ -140,7 +141,6 @@ Thank you.`;
           </div>
         </FadeUp>
 
-        {/* Impact section */}
         <FadeUp delay={3}>
           <div className="mx-auto mt-10 max-w-2xl rounded-2xl border border-surface-border bg-white p-6 shadow-card sm:p-8">
             <div className="flex items-center gap-3">
@@ -151,10 +151,10 @@ Thank you.`;
                 What your donation supports
               </h3>
             </div>
-            <ul className="mt-5 space-y-3 text-sm leading-relaxed text-ink-muted">
-              <li className="flex gap-3">
-                <span className="text-brand-500">•</span>
-                <span>Emergency rent and utility relief for families at risk of losing their home</span>
+            <ul classNamespan="mt-5 space-y-3 text-sm>
+ leading-relaxed text-ink-muted">
+                <span              <li className="flex gap-3">
+                <span className="text-brand-500">•</>Emergency rent and utility relief for families at risk of losing their home</span>
               </li>
               <li className="flex gap-3">
                 <span className="text-brand-500">•</span>
@@ -171,13 +171,11 @@ Thank you.`;
             </ul>
             <p className="mt-6 border-t border-surface-border pt-5 text-xs text-ink-muted">
               <strong className="text-ink">91 cents</strong> of every dollar
-              reaches families directly. We publish our annual report and are
-              audited independently.
+              reaches families directly.
             </p>
           </div>
         </FadeUp>
 
-        {/* Footer CTA */}
         <FadeUp delay={4}>
           <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
