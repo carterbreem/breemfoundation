@@ -53,6 +53,12 @@ export function Logo({
     }, TRIPLE_TAP_WINDOW_MS);
   }
 
+  // Colors
+  const bg = isLight ? "#FFFFFF" : "#0B5ED7";
+  const handColor = isLight ? "#0B5ED7" : "#FFFFFF";
+  const sunColor = "#F4B400";
+  const heartColor = isLight ? "#0B5ED7" : "#FFFFFF";
+
   return (
     <Link
       href="/"
@@ -65,28 +71,75 @@ export function Logo({
     >
       <span
         className={cn(
-          "relative flex items-center justify-center rounded-2xl shadow-card transition-transform group-hover:scale-105",
-          sizes.box,
-          isLight ? "bg-white" : "bg-brand-500"
+          "relative flex items-center justify-center rounded-full shadow-card transition-transform group-hover:scale-105",
+          sizes.box
         )}
+        style={{ backgroundColor: bg }}
       >
         <svg
-          viewBox="0 0 32 32"
+          viewBox="0 0 64 64"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className={cn("h-3/5 w-3/5", isLight ? "text-brand-500" : "text-white")}
+          className="h-4/5 w-4/5"
           aria-hidden
         >
+          {/* Rising sun (behind the heart, top portion) */}
+          <circle cx="32" cy="24" r="7" fill={sunColor} />
+          {/* Sun rays */}
+          <g stroke={sunColor} strokeWidth="2" strokeLinecap="round">
+            <line x1="32" y1="12" x2="32" y2="15" />
+            <line x1="42" y1="14" x2="40" y2="16.5" />
+            <line x1="22" y1="14" x2="24" y2="16.5" />
+            <line x1="46" y1="24" x2="43" y2="24" />
+            <line x1="18" y1="24" x2="21" y2="24" />
+          </g>
+
+          {/* Heart (top lobes + bottom point) */}
           <path
-            d="M7 5h11.5c4.14 0 7 2.46 7 6.2 0 2.7-1.4 4.5-3.6 5.2v.16c2.6.55 4.3 2.5 4.3 5.5 0 4.3-3.16 7.14-7.96 7.14H7V5Zm5.4 4.4v6.2h5c2.1 0 3.4-1.1 3.4-3.1 0-2-1.3-3.1-3.4-3.1h-5Zm0 10.1v6.7h5.4c2.4 0 3.9-1.24 3.9-3.35 0-2.1-1.5-3.35-3.9-3.35h-5.4Z"
-            fill="currentColor"
+            d="M32 44
+               C 22 36, 16 30, 16 24
+               C 16 19, 20 15, 25 15
+               C 28 15, 30.5 17, 32 19.5
+               C 33.5 17, 36 15, 39 15
+               C 44 15, 48 19, 48 24
+               C 48 30, 42 36, 32 44 Z"
+            fill="none"
+            stroke={heartColor}
+            strokeWidth="2.5"
+            strokeLinejoin="round"
+            strokeLinecap="round"
+          />
+
+          {/* Cradling hand — a cupped palm underneath the heart */}
+          <path
+            d="M12 42
+               C 12 42, 16 50, 24 52
+               C 28 53, 36 53, 40 52
+               C 48 50, 52 42, 52 42
+               C 52 42, 48 46, 44 46
+               L 44 46
+               C 44 46, 42 48, 40 48"
+            fill="none"
+            stroke={heartColor}
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          {/* Second palm line to suggest the cupped hand */}
+          <path
+            d="M14 44
+               C 14 44, 18 50, 26 51
+               C 30 51.5, 34 51.5, 38 51
+               C 46 50, 50 44, 50 44"
+            fill="none"
+            stroke={heartColor}
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            opacity="0.75"
           />
         </svg>
-        <span
-          className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-gold-500 ring-2 ring-white"
-          aria-hidden
-        />
       </span>
+
       <span className="flex flex-col leading-none">
         <span
           className={cn(
